@@ -222,9 +222,6 @@ export default function App() {
           className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity" 
           onClick={() => { setSnapshot(null); setResults(null); setParseError(null); }}
         >
-          <div className="w-8 h-8 bg-[var(--accent)] rounded-lg flex items-center justify-center">
-            <span className="text-black font-bold">F</span>
-          </div>
           <h1 className="text-xl font-semibold tracking-tight">FI Navigator</h1>
         </div>
         <div className="flex items-center gap-4">
