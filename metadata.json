@@ -1,0 +1,6 @@
+{
+  "name": "FI Navigator",
+  "description": "Your financial freedom dashboard. Calculate your FIRE number, see your progress, and get your next best move.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
