@@ -2,6 +2,7 @@ import { useState, FormEvent, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Loader2, ArrowRight, ArrowLeft, TrendingUp, ShieldCheck, Zap, Mail, Edit3, X, ChevronRight } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { usePostHog } from 'posthog-js/react';
 
 import type { FinancialSnapshot, ParseResult, FIRECalculations, ActionPlan } from './types';
 import { calculateFIRE, getInsights } from './lib/calculator';
@@ -81,6 +82,8 @@ export default function App() {
   const [emailSuccess, setEmailSuccess] = useState(false);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [intentType, setIntentType] = useState<'free' | 'paid'>('free');
+
+  const posthog = usePostHog();
 
   // Load from local storage
   useEffect(() => {
@@ -875,6 +878,7 @@ export default function App() {
                   <button 
                     onClick={() => {
                       console.log('Tracking Event: paid_roadmap_fake_door_clicked', { price: 9 });
+                      posthog?.capture('clicked_9_dollar_button');
                       openEmailModal('paid');
                     }}
                     className="bg-[var(--accent)] hover:bg-emerald-400 text-black font-semibold px-8 py-3 rounded-lg transition-colors text-sm w-full sm:w-auto text-center"
@@ -974,7 +978,7 @@ export default function App() {
                     )}
                     <div>
                       <label className="block text-xs font-semibold uppercase tracking-widest text-[var(--text-muted)] mb-2">Email</label>
-                      <input name="email" type="email" required placeholder="john@example.com" className="w-full p-3 bg-[#0D0E12] border border-[var(--border)] rounded-lg text-white outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)]" />
+                      <input name="email" type="email" required placeholder="john@example.com" className="ph-no-capture w-full p-3 bg-[#0D0E12] border border-[var(--border)] rounded-lg text-white outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)]" />
                     </div>
                     <label className="flex items-start gap-3 text-xs text-[var(--text-muted)] leading-snug cursor-pointer mt-2">
                       <input type="checkbox" required className="mt-0.5 rounded text-[var(--accent)] focus:ring-[var(--accent)] bg-[#0D0E12] border-[var(--border)]" />
