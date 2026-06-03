@@ -869,17 +869,26 @@ export default function App() {
                   <button onClick={() => { 
                     console.log('Tracking Event: free_beta_clicked');
                     openEmailModal('free');
-                  }} className="bg-white/10 hover:bg-white/20 text-white font-semibold px-8 py-3 rounded-lg border border-white/10 transition-colors text-sm w-full sm:w-auto">
-                    Join Free Beta
+                  }} className="bg-white/10 hover:bg-white/20 text-white font-semibold px-8 py-3 rounded-lg border border-white/10 transition-colors text-sm w-full sm:w-auto text-center">
+                    Join Free Newsletter
                   </button>
-                  <button onClick={() => { 
-                    console.log('Tracking Event: paid_roadmap_preview_clicked', { price: 9 });
-                    openEmailModal('paid');
-                  }} className="bg-[var(--accent)] hover:bg-emerald-400 text-black font-semibold px-8 py-3 rounded-lg transition-colors text-sm w-full sm:w-auto">
+                  <a 
+                    href="#"
+                    onClick={() => console.log('Tracking Event: checkout_clicked', { price: 9 })}
+                    className="bg-[var(--accent)] hover:bg-emerald-400 text-black font-semibold px-8 py-3 rounded-lg transition-colors text-sm w-full sm:w-auto text-center inline-block"
+                  >
                     Preview Full Roadmap - $9
-                  </button>
+                  </a>
                 </div>
-                <p className="text-[11px] text-[var(--text-muted)] mt-1">
+                
+                <div className="max-w-xl mx-auto mt-6 p-4 rounded-xl border border-[var(--border)] bg-[#1A1C21]/30 text-sm text-[var(--text-muted)] text-left flex gap-3 leading-relaxed">
+                  <span className="text-lg leading-none shrink-0">🛡️</span>
+                  <p>
+                    <strong className="text-[var(--text-primary)] font-semibold">Beta Promise:</strong> This tool is in early beta. If you find a logic bug with your specific numbers, email me. I will manually fix your plan, refund your $9 completely, and you keep the roadmap.
+                  </p>
+                </div>
+
+                <p className="text-[11px] text-[var(--text-muted)] mt-4">
                   Signup stores your email, first name, and selected intent. We do not store your full financial snapshot with the waitlist.
                 </p>
               </div>
@@ -950,7 +959,7 @@ export default function App() {
                     <p className="text-[var(--text-muted)] text-sm">
                       {intentType === 'paid' 
                         ? 'The paid roadmap is opening soon. Enter your email to join the waitlist and get early access.'
-                        : 'Enter your email to join the private beta list.'}
+                        : 'Enter your email to join our free newsletter for FIRE tips.'}
                     </p>
                   </div>
 
