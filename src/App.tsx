@@ -1,4 +1,4 @@
-import { useState, FormEvent, useEffect } from 'react';
+import { useState, FormEvent, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Loader2, ArrowRight, TrendingUp, ShieldCheck, Zap, Mail, Edit3, X, ChevronRight } from 'lucide-react';
 import confetti from 'canvas-confetti';
@@ -56,8 +56,8 @@ const formatCurrency = (val: number | null, _currency = 'USD') => {
 };
 
 const formatYears = (years: number | null) => {
-  if (years === null) return '∞ (Rat Race)';
-  if (years >= 100) return '∞ (Rat Race)';
+  if (years === null) return '�?(Rat Race)';
+  if (years >= 100) return '�?(Rat Race)';
   if (years >= 80) return '80+ years';
   if (years === 0) return 'Already there';
   return `${years.toFixed(1)} years`;
@@ -69,7 +69,6 @@ export default function App() {
   const [parseError, setParseError] = useState<string | null>(null);
   const [snapshot, setSnapshot] = useState<FinancialSnapshot | null>(null);
   
-  const [isEditing, setIsEditing] = useState(false);
   const [missingFields, setMissingFields] = useState<string[]>([]);
   
   const [results, setResults] = useState<{ calcs: FIRECalculations, actionPlan: ActionPlan } | null>(null);
@@ -117,7 +116,6 @@ export default function App() {
     const manualSnapshot = { ...defaultSnapshot };
     setSnapshot(manualSnapshot);
     setMissingFields(['monthlyIncome', 'monthlyExpenses', 'investedAssets']);
-    setIsEditing(true);
     setParseError(null);
     setResults(null);
     localStorage.setItem('fire_mvp_snapshot', JSON.stringify(manualSnapshot));
@@ -196,7 +194,6 @@ export default function App() {
     setBaselineResults({ calcs, actionPlan });
     setActiveScenario(null);
     setMissingFields([]);
-    setIsEditing(false);
     
     // Trigger confetti if good progress
     if (calcs.fireProgress > 0) {
@@ -288,14 +285,14 @@ export default function App() {
                      placeholder="e.g., I earn $8k/month, spend $4.5k, have $120k invested, $20k cash..."
                      className="w-full h-32 p-4 text-base bg-[#0D0E12] border border-[var(--border)] rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)] text-[var(--text-primary)] placeholder-[var(--text-muted)] opacity-60 focus:opacity-100 leading-relaxed transition-all appearance-none"
                    />
-                   <div className="flex justify-end items-center gap-3">
+                   <div className="flex justify-center items-center gap-3">
                      {isParsing && <Loader2 className="w-4 h-4 text-[var(--accent)] animate-spin" />}
                      <button 
                        type="submit" 
                        disabled={isParsing || !inputText.trim()}
-                       className="bg-[var(--accent)] text-black px-5 py-2.5 rounded-lg font-semibold hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2 text-sm shadow-sm"
+                       className="bg-[var(--accent)] text-black px-8 py-3 rounded-lg font-semibold hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2 text-base shadow-sm w-full sm:w-auto"
                      >
-                       {isParsing ? 'Calculating...' : 'Show My FIRE Path'} <ArrowRight className="w-4 h-4" />
+                       {isParsing ? 'Calculating...' : 'Show My FIRE Path'} <ArrowRight className="w-5 h-5" />
                      </button>
                    </div>
                  </form>
@@ -390,14 +387,9 @@ export default function App() {
               exit={{ opacity: 0, scale: 0.95 }}
               className="glass p-6 sm:p-8 space-y-8"
             >
-              <div className="flex justify-between items-end border-b border-[var(--border)] pb-4">
-                <div>
-                  <h3 className="text-2xl font-bold text-[var(--text-primary)]">Financial Snapshot</h3>
-                  <p className="text-[var(--text-muted)] mt-1">Edit anything before we calculate. Your confirmed snapshot stays in this browser unless you clear it.</p>
-                </div>
-                <button onClick={() => setIsEditing(!isEditing)} className="text-[var(--accent)] font-medium flex items-center gap-1.5 p-2 hover:bg-[var(--accent)]/10 rounded-lg transition-colors">
-                  <Edit3 className="w-4 h-4" /> {isEditing ? 'Done' : 'Edit'}
-                </button>
+              <div className="border-b border-[var(--border)] pb-4">
+                <h3 className="text-2xl font-bold text-[var(--text-primary)]">Financial Snapshot</h3>
+                <p className="text-[var(--text-muted)] mt-1">Tap any number to edit before we calculate. Your confirmed snapshot stays in this browser unless you clear it.</p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pb-4">
@@ -405,7 +397,7 @@ export default function App() {
                   label="Monthly Income" 
                   val={snapshot.monthlyIncome} 
                   fieldKey="monthlyIncome" 
-                  isEditing={isEditing} 
+                   
                   setSnapshot={setSnapshot}
                   microcopy="Your take-home pay after taxes."
                   pitfall="Don't use pre-tax income, or your cashflow will be artificially high."
@@ -414,7 +406,7 @@ export default function App() {
                   label="Monthly Expenses" 
                   val={snapshot.monthlyExpenses} 
                   fieldKey="monthlyExpenses" 
-                  isEditing={isEditing} 
+                   
                   setSnapshot={setSnapshot} 
                   isMissing={missingFields.includes('monthlyExpenses') && (snapshot.monthlyExpenses === null || Number.isNaN(snapshot.monthlyExpenses))}
                   microcopy="Rent, groceries, bills, and fun money."
@@ -425,7 +417,7 @@ export default function App() {
                     label="Monthly Investing" 
                     val={snapshot.monthlyInvesting !== null ? snapshot.monthlyInvesting : Math.max(0, snapshot.monthlyIncome - snapshot.monthlyExpenses)} 
                     fieldKey="monthlyInvesting" 
-                    isEditing={isEditing} 
+                     
                     setSnapshot={setSnapshot} 
                     microcopy="Money you plan to put into assets every month."
                     hint={snapshot.monthlyInvesting === null ? "Calculated from income minus expenses. Edit to override." : undefined}
@@ -436,7 +428,7 @@ export default function App() {
                   label="Invested Assets" 
                   val={snapshot.investedAssets} 
                   fieldKey="investedAssets" 
-                  isEditing={isEditing} 
+                   
                   setSnapshot={setSnapshot} 
                   isMissing={missingFields.includes('investedAssets') && (snapshot.investedAssets === null || Number.isNaN(snapshot.investedAssets))} 
                   microcopy="Stocks, ETFs, Crypto, or Real Estate (excluding primary home)."
@@ -446,7 +438,7 @@ export default function App() {
                   label="Liquid Savings" 
                   val={snapshot.liquidSavings} 
                   fieldKey="liquidSavings" 
-                  isEditing={isEditing} 
+                   
                   setSnapshot={setSnapshot}
                   microcopy="Cash you can access immediately (Checking, Savings, Emergency fund)."
                   pitfall="Do not include locked term deposits."
@@ -455,84 +447,18 @@ export default function App() {
                   label="Total Debt" 
                   val={snapshot.debt} 
                   fieldKey="debt" 
-                  isEditing={isEditing} 
+                   
                   setSnapshot={setSnapshot}
                   microcopy="Mortgages, student loans, car loans, etc."
                 />
-                {(snapshot.debt > 0 || snapshot.hasHighInterestDebt === 'yes') && (
-                  <div className="p-4 rounded-xl border border-[var(--border)] bg-[#0D0E12] col-span-1 sm:col-span-2">
-                    <label className="block uppercase tracking-widest text-[10px] font-semibold text-[var(--text-muted)] mb-1">High-interest debt</label>
-                    
-                    {!isEditing ? (
-                      <div className="mt-1">
-                        {snapshot.hasHighInterestDebt === 'yes' || (snapshot.highInterestDebt && snapshot.highInterestDebt > 0) ? (
-                          <div className="text-xl font-semibold text-orange-400">
-                            {snapshot.highInterestDebt ? formatCurrency(snapshot.highInterestDebt, 'USD') : 'Yes (amount unknown)'}
-                          </div>
-                        ) : snapshot.hasHighInterestDebt === 'no' ? (
-                          <div className="text-lg font-medium text-[var(--text-primary)]">None</div>
-                        ) : (
-                          <div className="text-lg font-medium text-[var(--text-muted)]">Not sure</div>
-                        )}
-                      </div>
-                    ) : (
-                      <>
-                        <div className="text-[11px] text-[var(--text-muted)] mb-2 opacity-80 leading-snug">
-                          Usually credit cards or personal loans with an interest rate &gt; 8%.
-                        </div>
-                        <div className="text-[11px] text-orange-400/80 mb-3 leading-snug flex gap-1">
-                          <Zap className="w-3 h-3 shrink-0 mt-0.5" />
-                          <span>Rates &gt; 8% are toxic to compound interest. Be honest here.</span>
-                        </div>
-                        <div className="space-y-4 mt-2">
-                          <div>
-                            <p className="text-sm text-white mb-2">Is any of this high-interest debt?</p>
-                            <div className="flex flex-wrap gap-2">
-                              {['No / low-interest debt', 'Yes, some is high-interest', 'Not sure'].map((opt) => {
-                                const valMap: any = { 'No / low-interest debt': 'no', 'Yes, some is high-interest': 'yes', 'Not sure': 'not_sure' };
-                                const val = valMap[opt];
-                                const isSelected = snapshot.hasHighInterestDebt === val;
-                                return (
-                                  <button
-                                    key={opt}
-                                    onClick={() => setSnapshot(s => s ? { ...s, hasHighInterestDebt: val, highInterestDebt: val !== 'yes' ? 0 : s.highInterestDebt } : null)}
-                                    className={cn("px-4 py-2 rounded-lg border text-sm transition-colors", isSelected ? "border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]" : "border-[var(--border)] bg-[#1A1C21] text-[var(--text-muted)] hover:border-[var(--text-muted)]")}
-                                  >
-                                    {opt}
-                                  </button>
-                                );
-                              })}
-                            </div>
-                          </div>
-                          
-                          {snapshot.hasHighInterestDebt === 'yes' && (
-                            <div className="pt-2 border-t border-[var(--border)]">
-                              <label className="text-sm text-white block mb-2 mt-2">How much high-interest debt do you have?</label>
-                              <div className="relative flex items-center w-full sm:w-1/2 mt-1">
-                                <span className="absolute left-3 text-[var(--text-muted)] pointer-events-none select-none font-medium">$</span>
-                                <input 
-                                  type="number"
-                                  placeholder="5000"
-                                  value={snapshot.highInterestDebt === null ? '' : snapshot.highInterestDebt}
-                                  onChange={e => {
-                                     const v = e.target.value;
-                                     setSnapshot(s => s ? ({ ...s, highInterestDebt: v !== '' ? parseFloat(v) : null, highInterestDebtProvided: v !== '' }) : null);
-                                  }}
-                                  className="bg-[#0D0E12] border border-[var(--border)] text-base font-medium text-white outline-none focus:border-[var(--accent)] rounded-md pl-7 pr-3 py-2 w-full"
-                                />
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </>
-                    )}
-                  </div>
-                )}
+                
+                <HighInterestDebtField snapshot={snapshot} setSnapshot={setSnapshot} />
+
                 <SnapshotField 
                   label="Passive Income" 
                   val={snapshot.passiveIncome} 
                   fieldKey="passiveIncome" 
-                  isEditing={isEditing} 
+                   
                   setSnapshot={setSnapshot}
                   microcopy="Money earned without actively working for it (e.g., dividends, rental income)."
                 />
@@ -550,7 +476,7 @@ export default function App() {
                 
                 return (
                   <div className="space-y-6 pt-4">
-                    {originalCriticalMissing.length > 0 && !isEditing && (
+                    {originalCriticalMissing.length > 0 && (
                       <div className="bg-orange-900/10 border border-orange-900/50 rounded-xl p-5 space-y-4">
                         <div className="flex gap-2 text-orange-400 font-medium text-sm">
                           <Zap className="w-5 h-5 mt-0.5 shrink-0" /> 
@@ -679,7 +605,7 @@ export default function App() {
                       </div>
                       <div className="text-4xl sm:text-5xl font-serif font-semibold text-[var(--text-primary)]">
                         {results.calcs.yearsToFI !== null && results.calcs.yearsToFI < 100 ? formatYears(results.calcs.yearsToFI) : 
-                         (results.calcs.potentialYearsToFI !== null ? formatYears(results.calcs.potentialYearsToFI) : '∞ (Rat Race)')}
+                         (results.calcs.potentialYearsToFI !== null ? formatYears(results.calcs.potentialYearsToFI) : '�?(Rat Race)')}
                       </div>
                     </div>
                     
@@ -856,11 +782,11 @@ export default function App() {
                                    extra = `your FIRE target drops by ${formatCurrency(targetDrop)}, and `;
                                }
                                const actionWord = type === 'spend' ? 'cutting' : type === 'invest' ? 'investing' : 'earning';
-                               impactText = `⚡ By ${actionWord} just ${formatCurrency(amount)}/mo, ${extra}you shave ${diff.toFixed(1)} YEARS off your working life!`;
+                               impactText = `�?By ${actionWord} just ${formatCurrency(amount)}/mo, ${extra}you shave ${diff.toFixed(1)} YEARS off your working life!`;
                            }
                        } else if (baseline === null && current !== null) {
                            changeText = "Now on track to FIRE!";
-                           impactText = `⚡ This single move breaks you out of the Rat Race! You are now on track to FIRE in ${formatYears(current)}.`;
+                           impactText = `�?This single move breaks you out of the Rat Race! You are now on track to FIRE in ${formatYears(current)}.`;
                        } else {
                            changeText = "-";
                        }
@@ -1073,32 +999,150 @@ export default function App() {
   );
 }
 
-function SnapshotField({ label, val, fieldKey, isEditing, setSnapshot, isMissing = false, hint, microcopy, pitfall }: any) {
-  if (!isEditing && val === null && !isMissing) return null; // Don't show empty optional fields when viewing
+function HighInterestDebtField({ snapshot, setSnapshot }: any) {
+  const [isFocused, setIsFocused] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isFocused && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isFocused]);
+
+  if (!(snapshot.debt > 0 || snapshot.hasHighInterestDebt === 'yes')) return null;
 
   return (
-    <div className={cn("p-4 rounded-xl border relative bg-[#0D0E12]", isMissing ? "border-orange-900/50 bg-orange-900/10" : "border-[var(--border)]")}>
-      <label className="block uppercase tracking-widest text-[10px] font-semibold text-[var(--text-muted)] mb-1">{label}</label>
-      
-      {isEditing && microcopy && (
-        <div className="text-[11px] text-[var(--text-muted)] mb-2 opacity-80 leading-snug">
-          {microcopy}
-        </div>
-      )}
-      
-      {isEditing && pitfall && (
-        <div className="text-[11px] text-orange-400/80 mb-3 leading-snug flex gap-1">
-          <Zap className="w-3 h-3 shrink-0 mt-0.5" />
-          <span>{pitfall}</span>
-        </div>
-      )}
+    <div 
+      className={cn("p-4 rounded-xl border relative transition-colors cursor-text group col-span-1 sm:col-span-2", isFocused ? "border-[var(--accent)] bg-[#0D0E12]" : "border-[var(--border)] bg-[#0D0E12] hover:border-white/20")}
+      onClick={() => !isFocused && setIsFocused(true)}
+    >
+      <div className="flex justify-between items-center mb-1">
+        <label className="block uppercase tracking-widest text-[10px] font-semibold text-[var(--text-muted)] cursor-text">High-interest debt</label>
+        {!isFocused && <Edit3 className="w-3 h-3 text-[var(--text-muted)] opacity-0 group-hover:opacity-100 transition-opacity" />}
+      </div>
 
-      {isEditing ? (
+      <AnimatePresence>
+        {isFocused && (
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}>
+            <div className="text-[11px] text-[var(--text-muted)] mb-2 opacity-80 leading-snug">
+              Usually credit cards or personal loans with an interest rate &gt; 8%.
+            </div>
+            <div className="text-[11px] text-orange-400/80 mb-3 leading-snug flex gap-1 overflow-hidden">
+              <Zap className="w-3 h-3 shrink-0 mt-0.5" />
+              <span>Rates &gt; 8% are toxic to compound interest. Be honest here.</span>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {isFocused ? (
+        <div className="space-y-4 mt-2" onClick={(e) => e.stopPropagation()}>
+          <div>
+            <p className="text-sm text-white mb-2">Is any of this high-interest debt?</p>
+            <div className="flex flex-wrap gap-2">
+              {['No / low-interest debt', 'Yes, some is high-interest', 'Not sure'].map((opt) => {
+                const valMap: any = { 'No / low-interest debt': 'no', 'Yes, some is high-interest': 'yes', 'Not sure': 'not_sure' };
+                const val = valMap[opt];
+                const isSelected = snapshot.hasHighInterestDebt === val;
+                return (
+                  <button
+                    key={opt}
+                    onClick={() => setSnapshot((s: any) => s ? { ...s, hasHighInterestDebt: val, highInterestDebt: val !== 'yes' ? 0 : s.highInterestDebt } : null)}
+                    className={cn("px-4 py-2 rounded-lg border text-sm transition-colors", isSelected ? "border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]" : "border-[var(--border)] bg-[#1A1C21] text-[var(--text-muted)] hover:border-[var(--text-muted)]")}
+                  >
+                    {opt}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+          
+          {snapshot.hasHighInterestDebt === 'yes' && (
+            <div className="pt-2 border-t border-[var(--border)]">
+              <label className="text-sm text-white block mb-2 mt-2">How much high-interest debt do you have?</label>
+              <div className="relative flex items-center w-full sm:w-1/2 mt-1">
+                <span className="absolute left-3 text-[var(--text-muted)] pointer-events-none select-none font-medium">$</span>
+                <input 
+                  ref={inputRef}
+                  type="number"
+                  placeholder="5000"
+                  value={snapshot.highInterestDebt === null ? '' : snapshot.highInterestDebt}
+                  onBlur={() => {
+                     setTimeout(() => setIsFocused(false), 200); // Allow clicks on buttons
+                  }}
+                  onChange={e => {
+                     const v = e.target.value;
+                     setSnapshot((s: any) => ({ ...s, highInterestDebt: v !== '' ? parseFloat(v) : null }));
+                  }}
+                  className="w-full bg-[#1A1C21] border border-[var(--border)] text-lg font-medium text-white outline-none focus:border-[var(--accent)] rounded-md pl-7 pr-2 py-1"
+                />
+              </div>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="mt-1">
+          {snapshot.hasHighInterestDebt === 'yes' || (snapshot.highInterestDebt && snapshot.highInterestDebt > 0) ? (
+            <div className="text-xl font-semibold text-orange-400 mt-1">
+              {snapshot.highInterestDebt ? formatCurrency(snapshot.highInterestDebt, 'USD') : 'Yes (amount unknown)'}
+            </div>
+          ) : snapshot.hasHighInterestDebt === 'no' ? (
+            <div className="text-lg font-medium text-[var(--text-primary)] mt-1">None</div>
+          ) : (
+            <div className="text-lg font-medium text-[var(--text-muted)] mt-1">Not sure</div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SnapshotField({ label, val, fieldKey, setSnapshot, isMissing = false, hint, microcopy, pitfall }: any) {
+  const [isFocused, setIsFocused] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isFocused && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isFocused]);
+
+  return (
+    <div 
+      className={cn(
+        "p-4 rounded-xl border relative transition-colors cursor-text group", 
+        isMissing ? "border-orange-900/50 bg-orange-900/10" : (isFocused ? "border-[var(--accent)] bg-[#0D0E12]" : "border-[var(--border)] bg-[#0D0E12] hover:border-white/20")
+      )}
+      onClick={() => !isFocused && setIsFocused(true)}
+    >
+      <div className="flex justify-between items-center mb-1">
+        <label className="block uppercase tracking-widest text-[10px] font-semibold text-[var(--text-muted)] cursor-text">{label}</label>
+        {!isFocused && <Edit3 className="w-3 h-3 text-[var(--text-muted)] opacity-0 group-hover:opacity-100 transition-opacity" />}
+      </div>
+      
+      <AnimatePresence>
+        {isFocused && microcopy && (
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="text-[11px] text-[var(--text-muted)] mb-2 opacity-80 leading-snug">
+            {microcopy}
+          </motion.div>
+        )}
+        
+        {isFocused && pitfall && (
+          <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="text-[11px] text-orange-400/80 mb-3 leading-snug flex gap-1 overflow-hidden">
+            <Zap className="w-3 h-3 shrink-0 mt-0.5" />
+            <span>{pitfall}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {isFocused ? (
         <div className="relative flex items-center mt-1">
           <span className="absolute left-3 text-[var(--text-muted)] pointer-events-none select-none font-medium">$</span>
           <input 
+            ref={inputRef}
             type="number"
             value={val === null ? '' : val}
+            onBlur={() => setIsFocused(false)}
             onChange={e => {
                const v = e.target.value;
                setSnapshot((s: any) => ({ 
@@ -1107,15 +1151,16 @@ function SnapshotField({ label, val, fieldKey, isEditing, setSnapshot, isMissing
                  [`${fieldKey}Provided`]: v !== ''
                }));
             }}
-            className="w-full bg-[#0D0E12] border border-[var(--border)] text-lg font-medium text-white outline-none focus:border-[var(--accent)] rounded-md pl-7 pr-2 py-1"
+            className="w-full bg-[#1A1C21] border border-[var(--border)] text-lg font-medium text-white outline-none focus:border-[var(--accent)] rounded-md pl-7 pr-2 py-1"
           />
         </div>
       ) : (
-        <div className="text-xl font-semibold text-[var(--text-primary)]">
+        <div className="text-xl font-semibold text-[var(--text-primary)] mt-1">
            {isMissing ? <span className="text-orange-400 text-base font-normal flex items-center gap-1.5"><Zap className="w-4 h-4" /> Needed</span> : formatCurrency(val)}
         </div>
       )}
-      {hint && !isEditing && !isMissing && (
+
+      {hint && !isFocused && !isMissing && (
         <p className="text-[11px] text-[var(--text-muted)] opacity-80 mt-2">{hint}</p>
       )}
     </div>
@@ -1149,7 +1194,7 @@ function AssumptionImpact({ snapshot }: { snapshot: FinancialSnapshot }) {
   const getYearsStr = (calcs: any) => {
     if (calcs.yearsToFI !== null && calcs.yearsToFI < 100) return formatYears(calcs.yearsToFI);
     if (calcs.potentialYearsToFI !== null) return formatYears(calcs.potentialYearsToFI);
-    return '∞ (Rat Race)';
+    return '�?(Rat Race)';
   };
 
   const getEffectiveYears = (calcs: any) => {
