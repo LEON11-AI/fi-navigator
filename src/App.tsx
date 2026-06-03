@@ -1149,6 +1149,14 @@ function AssumptionImpact({ snapshot }: { snapshot: FinancialSnapshot }) {
     return '∞ (Rat Race)';
   };
 
+  const getEffectiveYears = (calcs: any) => {
+    if (calcs.yearsToFI !== null && calcs.yearsToFI < 100) return calcs.yearsToFI;
+    if (calcs.potentialYearsToFI !== null && calcs.potentialYearsToFI < 100) return calcs.potentialYearsToFI;
+    return Infinity;
+  };
+
+  const isOutOReach = getEffectiveYears(baseCalcs) >= 80 || getEffectiveYears(stressCalcs) >= 80;
+
   return (
     <div className="glass p-6 space-y-5">
       <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
@@ -1181,7 +1189,11 @@ function AssumptionImpact({ snapshot }: { snapshot: FinancialSnapshot }) {
             className="overflow-hidden"
           >
             <div className="bg-orange-500/10 border border-orange-500/20 rounded-lg p-4 text-orange-400/90 text-sm leading-relaxed mt-1">
-              <strong>Stress Test:</strong> If inflation rises or returns are lower (1% Real Return), your freedom date moves from <span className="font-semibold text-white">{getYearsStr(baseCalcs)}</span> to <span className="font-semibold text-white">{getYearsStr(stressCalcs)}</span>.
+              {isOutOReach ? (
+                <><strong>Stress Test:</strong> Under high inflation / low return scenarios, your goal becomes mathematically out of reach (Beyond 80 years).</>
+              ) : (
+                <><strong>Stress Test:</strong> If inflation rises or returns are lower (1% Real Return), your freedom date moves from <span className="font-semibold text-white">{getYearsStr(baseCalcs)}</span> to <span className="font-semibold text-white">{getYearsStr(stressCalcs)}</span>.</>
+              )}
             </div>
           </motion.div>
         )}
