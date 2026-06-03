@@ -280,21 +280,21 @@ export default function App() {
                      <Zap className="w-3 h-3 text-[var(--accent)]" /> Smart input
                    </div>
                  </label>
-                 <form onSubmit={handleParse} className="space-y-3">
+                 <form onSubmit={handleParse} className="space-y-3 relative">
                    <div className="glass overflow-hidden focus-within:ring-2 focus-within:ring-[var(--accent)] focus-within:border-[var(--accent)] transition-all bg-[#0D0E12]">
                      <textarea
                        value={inputText}
                        onChange={e => setInputText(e.target.value)}
                        placeholder="e.g., I earn $8k/month, spend $4.5k, have $120k invested, $20k cash..."
-                       className="w-full h-32 p-4 text-base bg-transparent border-none resize-none focus:outline-none focus:ring-0 text-[var(--text-primary)] placeholder-[var(--text-muted)] opacity-60 focus:opacity-100 leading-relaxed"
+                       className="w-full h-32 p-4 pb-14 text-base bg-transparent border-none resize-none focus:outline-none focus:ring-0 text-[var(--text-primary)] placeholder-[var(--text-muted)] opacity-60 focus:opacity-100 leading-relaxed"
                      />
                    </div>
-                   <div className="flex justify-end items-center gap-3">
+                   <div className="absolute bottom-3 right-3 flex items-center gap-3">
                      {isParsing && <Loader2 className="w-4 h-4 text-[var(--accent)] animate-spin" />}
                      <button 
                        type="submit" 
                        disabled={isParsing || !inputText.trim()}
-                       className="bg-[var(--accent)] text-black px-5 py-2.5 rounded-lg font-semibold hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2 text-sm shadow-sm"
+                       className="bg-[var(--accent)] text-black px-4 py-2 rounded-lg font-semibold hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2 text-sm shadow-sm"
                      >
                        {isParsing ? 'Calculating...' : 'Show My FIRE Path'} <ArrowRight className="w-4 h-4" />
                      </button>
@@ -466,7 +466,7 @@ export default function App() {
                     
                     {!isEditing ? (
                       <div className="mt-1">
-                        {snapshot.hasHighInterestDebt === 'yes' ? (
+                        {snapshot.hasHighInterestDebt === 'yes' || (snapshot.highInterestDebt && snapshot.highInterestDebt > 0) ? (
                           <div className="text-xl font-semibold text-orange-400">
                             {snapshot.highInterestDebt ? formatCurrency(snapshot.highInterestDebt, 'USD') : 'Yes (amount unknown)'}
                           </div>
