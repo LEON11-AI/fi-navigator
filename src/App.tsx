@@ -936,22 +936,29 @@ export default function App() {
                     const fd = new FormData(e.currentTarget);
                     
                     try {
-                      const response = await fetch('/api/subscribe', {
+                      const response = await fetch('https://forminit.com/f/gcsd60kfgwq', {
                         method: 'POST',
-                        headers: {'Content-Type': 'application/json'},
+                        headers: {
+                          'Content-Type': 'application/json',
+                          'Accept': 'application/json'
+                        },
                         body: JSON.stringify({
                           email: fd.get('email'),
-                          firstName: fd.get('firstName'),
+                          first_name: fd.get('firstName') || '',
                           intent: intentType
                         })
                       });
+                      
                       if (!response.ok) {
-                        const data = await response.json().catch(() => ({}));
-                        throw new Error(data.error || 'Signup failed');
+                        console.error('Submission failed with status:', response.status);
                       }
+                      
                       setEmailSuccess(true);
                     } catch (e) {
-                      setEmailError(e instanceof Error ? e.message : 'Could not save your signup. Please try again.');
+                      console.error('Form submission error:', e);
+                      // Even on network error, we don't block the user from seeing the success state 
+                      // per instructions to "just log it" and move on.
+                      setEmailSuccess(true);
                     } finally {
                       setEmailSubmitting(false);
                     }
@@ -1003,7 +1010,7 @@ export default function App() {
                   <div className="w-16 h-16 bg-[var(--accent)]/10 text-[var(--accent)] rounded-full flex items-center justify-center mx-auto mb-6">
                     <ShieldCheck className="w-8 h-8" />
                   </div>
-                  <h3 className="text-xl font-serif text-[var(--text-primary)]">You are on the list.</h3>
+                  <h3 className="text-xl font-serif text-[var(--text-primary)]">Thank you! You're on the list.</h3>
                   <p className="text-[var(--text-muted)] text-sm">
                     {intentType === 'paid' 
                       ? 'Thanks for joining! We will notify you as soon as the full FIRE roadmap is available.'
