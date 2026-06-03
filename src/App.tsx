@@ -282,14 +282,12 @@ export default function App() {
                    </div>
                  </label>
                  <form onSubmit={handleParse} className="space-y-3">
-                   <div className="glass overflow-hidden focus-within:ring-2 focus-within:ring-[var(--accent)] focus-within:border-[var(--accent)] transition-all bg-[#0D0E12]">
-                     <textarea
-                       value={inputText}
-                       onChange={e => setInputText(e.target.value)}
-                       placeholder="e.g., I earn $8k/month, spend $4.5k, have $120k invested, $20k cash..."
-                       className="w-full h-32 p-4 text-base bg-transparent border-none resize-none focus:outline-none focus:ring-0 text-[var(--text-primary)] placeholder-[var(--text-muted)] opacity-60 focus:opacity-100 leading-relaxed"
-                     />
-                   </div>
+                   <textarea
+                     value={inputText}
+                     onChange={e => setInputText(e.target.value)}
+                     placeholder="e.g., I earn $8k/month, spend $4.5k, have $120k invested, $20k cash..."
+                     className="w-full h-32 p-4 text-base bg-[#0D0E12] border border-[var(--border)] rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)] text-[var(--text-primary)] placeholder-[var(--text-muted)] opacity-60 focus:opacity-100 leading-relaxed transition-all appearance-none"
+                   />
                    <div className="flex justify-end items-center gap-3">
                      {isParsing && <Loader2 className="w-4 h-4 text-[var(--accent)] animate-spin" />}
                      <button 
