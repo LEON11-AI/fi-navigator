@@ -928,35 +928,26 @@ export default function App() {
               
               {!emailSuccess ? (
                 <form 
-                  onSubmit={async e => {
+                  onSubmit={e => {
                     e.preventDefault();
                     setEmailSubmitting(true);
                     setEmailError(null);
-                    const fd = new FormData(e.currentTarget);
                     
                     try {
-                      const response = await fetch('https://forminit.com/f/gcsd60kfgwq', {
-                        method: 'POST',
-                        headers: {
-                          'Content-Type': 'application/json',
-                          'Accept': 'application/json'
-                        },
-                        body: JSON.stringify({
-                          email: fd.get('email'),
-                          first_name: fd.get('firstName') || '',
-                          intent: intentType
-                        })
-                      });
+                      const fd = new FormData(e.currentTarget);
+                      const userEmail = fd.get('email') as string;
+                      const userName = fd.get('firstName') as string || 'Not provided';
                       
-                      if (!response.ok) {
-                        console.error('Submission failed with status:', response.status);
-                      }
+                      // Change this to your actual receiving email address
+                      const targetEmail = "leon273326413@gmail.com"; 
+                      const subject = encodeURIComponent(`New Waitlist Submission: ${userEmail}`);
+                      const body = encodeURIComponent(`Name: ${userName}\nEmail: ${userEmail}`);
+                      
+                      window.location.href = `mailto:${targetEmail}?subject=${subject}&body=${body}`;
                       
                       setEmailSuccess(true);
                     } catch (e) {
                       console.error('Form submission error:', e);
-                      // Even on network error, we don't block the user from seeing the success state 
-                      // per instructions to "just log it" and move on.
                       setEmailSuccess(true);
                     } finally {
                       setEmailSubmitting(false);
