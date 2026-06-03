@@ -974,7 +974,7 @@ export default function App() {
                     </div>
                     <label className="flex items-start gap-3 text-xs text-[var(--text-muted)] leading-snug cursor-pointer mt-2">
                       <input type="checkbox" required className="mt-0.5 rounded text-[var(--accent)] focus:ring-[var(--accent)] bg-[#0D0E12] border-[var(--border)]" />
-                      <span>I agree to receive my FIRE roadmap and occasional product updates.</span>
+                      <span>I agree to receive occasional FIRE tips and product updates.</span>
                     </label>
                   </div>
 
@@ -987,7 +987,7 @@ export default function App() {
                     disabled={emailSubmitting}
                     className="w-full bg-[var(--accent)] text-black font-semibold py-3.5 rounded-lg hover:bg-emerald-400 disabled:opacity-50 transition-colors"
                   >
-                    {emailSubmitting ? <Loader2 className="w-5 h-5 mx-auto animate-spin" /> : (intentType === 'paid' ? "Join Waitlist" : "Send My Roadmap")}
+                    {emailSubmitting ? <Loader2 className="w-5 h-5 mx-auto animate-spin" /> : (intentType === 'paid' ? "Join Waitlist" : "Join Newsletter")}
                   </button>
                 </form>
               ) : (
