@@ -872,13 +872,15 @@ export default function App() {
                   }} className="bg-white/10 hover:bg-white/20 text-white font-semibold px-8 py-3 rounded-lg border border-white/10 transition-colors text-sm w-full sm:w-auto text-center">
                     Join Free Newsletter
                   </button>
-                  <a 
-                    href="#"
-                    onClick={() => console.log('Tracking Event: checkout_clicked', { price: 9 })}
-                    className="bg-[var(--accent)] hover:bg-emerald-400 text-black font-semibold px-8 py-3 rounded-lg transition-colors text-sm w-full sm:w-auto text-center inline-block"
+                  <button 
+                    onClick={() => {
+                      console.log('Tracking Event: paid_roadmap_fake_door_clicked', { price: 9 });
+                      openEmailModal('paid');
+                    }}
+                    className="bg-[var(--accent)] hover:bg-emerald-400 text-black font-semibold px-8 py-3 rounded-lg transition-colors text-sm w-full sm:w-auto text-center"
                   >
                     Preview Full Roadmap - $9
-                  </a>
+                  </button>
                 </div>
                 
                 <div className="max-w-xl mx-auto mt-6 p-4 rounded-xl border border-[var(--border)] bg-[#1A1C21]/30 text-sm text-[var(--text-muted)] text-left flex gap-3 leading-relaxed">
@@ -954,20 +956,22 @@ export default function App() {
                 >
                   <div className="space-y-1">
                     <h3 className="text-2xl font-serif text-[var(--text-primary)]">
-                      {intentType === 'paid' ? 'Early Access List' : 'Almost there'}
+                      {intentType === 'paid' ? 'You caught us early! 😅' : 'Almost there'}
                     </h3>
                     <p className="text-[var(--text-muted)] text-sm">
                       {intentType === 'paid' 
-                        ? 'The paid roadmap is opening soon. Enter your email to join the waitlist and get early access.'
+                        ? 'Our payment system is currently undergoing compliance review and we cannot accept payments today. But since you were ready to buy, leave your email below. I will send you the $9 Roadmap for FREE (or with a massive early-bird discount) the moment we go live.'
                         : 'Enter your email to join our free newsletter for FIRE tips.'}
                     </p>
                   </div>
 
                   <div className="space-y-4">
-                    <div>
-                      <label className="block text-xs font-semibold uppercase tracking-widest text-[var(--text-muted)] mb-2">First Name (Optional)</label>
-                      <input name="firstName" type="text" placeholder="John" className="w-full p-3 bg-[#0D0E12] border border-[var(--border)] rounded-lg text-white outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)]" />
-                    </div>
+                    {intentType !== 'paid' && (
+                      <div>
+                        <label className="block text-xs font-semibold uppercase tracking-widest text-[var(--text-muted)] mb-2">First Name (Optional)</label>
+                        <input name="firstName" type="text" placeholder="John" className="w-full p-3 bg-[#0D0E12] border border-[var(--border)] rounded-lg text-white outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)]" />
+                      </div>
+                    )}
                     <div>
                       <label className="block text-xs font-semibold uppercase tracking-widest text-[var(--text-muted)] mb-2">Email</label>
                       <input name="email" type="email" required placeholder="john@example.com" className="w-full p-3 bg-[#0D0E12] border border-[var(--border)] rounded-lg text-white outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)]" />
@@ -987,7 +991,7 @@ export default function App() {
                     disabled={emailSubmitting}
                     className="w-full bg-[var(--accent)] text-black font-semibold py-3.5 rounded-lg hover:bg-emerald-400 disabled:opacity-50 transition-colors"
                   >
-                    {emailSubmitting ? <Loader2 className="w-5 h-5 mx-auto animate-spin" /> : (intentType === 'paid' ? "Join Waitlist" : "Join Newsletter")}
+                    {emailSubmitting ? <Loader2 className="w-5 h-5 mx-auto animate-spin" /> : (intentType === 'paid' ? "Get on the VIP List" : "Join Newsletter")}
                   </button>
                 </form>
               ) : (
