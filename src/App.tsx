@@ -874,12 +874,15 @@ export default function App() {
                   </button>
                   <button 
                     onClick={() => {
-                      console.log('Tracking Event: paid_roadmap_fake_door_clicked', { price: 9 });
+                      console.log('Tracking Event: paid_roadmap_tally_clicked', { price: 9 });
                       if (typeof window !== 'undefined' && window.posthog) {
                         window.posthog.capture('clicked_9_dollar_button');
                       }
-                      openEmailModal('paid');
                     }}
+                    data-tally-open="VLDgzy" 
+                    data-tally-layout="modal"
+                    data-tally-emoji-text="👋" 
+                    data-tally-emoji-animation="wave"
                     className="bg-[var(--accent)] hover:bg-emerald-400 text-black font-semibold px-8 py-3 rounded-lg transition-colors text-sm w-full sm:w-auto text-center"
                   >
                     Preview Full Roadmap - $9
