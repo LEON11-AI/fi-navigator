@@ -72,7 +72,12 @@ export function calculateFIRE(snapshot: FinancialSnapshot): FIRECalculations {
 }
 
 export function getInsights(snapshot: FinancialSnapshot, calcs: FIRECalculations): ActionPlan {
-  let blocker: BlockerType = 'default';
+  let blocker: string = 'scenarioC';
+  
+  const mIncome = snapshot.monthlyIncome || 0;
+  const mExpenses = snapshot.monthlyExpenses || 0;
+  const mSurplus = Math.max(mIncome - mExpenses, 0);
+  const isInvesting = calcs.effectiveMonthlyInvesting > 0;
   
   const hasHighDebt = (snapshot.highInterestDebt || 0) > 0 || (snapshot.hasHighInterestDebt === 'yes' && (snapshot.debt || 0) > 0 && (snapshot.highInterestDebt === null || snapshot.highInterestDebt > 0));
 
@@ -80,20 +85,12 @@ export function getInsights(snapshot: FinancialSnapshot, calcs: FIRECalculations
     blocker = 'highInterestDebt';
   } else if (snapshot.passiveIncome > 0 && snapshot.passiveIncome >= (snapshot.monthlyExpenses || 99999999)) {
     blocker = 'passiveIncomeCovers';
-  } else if (calcs.runwayMonths >= 3 && (snapshot.investedAssets || 0) <= 0.01 && snapshot.investedAssetsProvided) {
-    blocker = 'solidRunwayNoInvesting';
-  } else if (snapshot.investedAssetsProvided && (snapshot.investedAssets || 0) <= 0.01 && calcs.effectiveMonthlyInvesting > 0) {
-    blocker = 'startingFromZero';
-  } else if ((snapshot.investedAssets || 0) > 0 && calcs.runwayMonths < 3) {
-    blocker = 'thinRunway';
-  } else if (calcs.effectiveMonthlyInvesting <= 0) {
-    blocker = 'noSurplus';
-  } else if ((snapshot.monthlyIncome || 0) > 0 && ((snapshot.monthlyExpenses || 0) / (snapshot.monthlyIncome || 1)) >= 0.75) {
-    blocker = 'highBurnRate';
-  } else if (calcs.runwayMonths < 3) {
-    blocker = 'lowRunway';
-  } else if (calcs.savingsRate < 0.15) {
-    blocker = 'lowInvestingRate';
+  } else if (mIncome <= mExpenses) {
+    blocker = 'scenarioA';
+  } else if (mSurplus > 0 && !isInvesting) {
+    blocker = 'scenarioB';
+  } else {
+    blocker = 'scenarioC';
   }
   
   const runwayTarget = (snapshot.monthlyExpenses || 0) * 3;
@@ -118,63 +115,32 @@ export function getInsights(snapshot: FinancialSnapshot, calcs: FIRECalculations
           'Start optimizing for tax efficiency and long-term asset preservation.'
         ]
       };
-    case 'solidRunwayNoInvesting':
-    case 'startingFromZero': {
-      const surplus = calcs.effectiveMonthlyInvesting;
+    case 'scenarioA':
       return {
-        blocker: `The "Leaky Bucket" Fix. You are making money, but ${formatCur(surplus)} is sitting idle every month being eaten by inflation.`,
+        blocker: 'You are living beyond your means (or exactly at them). You have zero investable surplus.',
         moves: [
-          `Set up an auto-transfer of ${formatCur(surplus)} to a broad-market index fund tomorrow morning.`,
-          `Ensure your ${formatCur(snapshot.liquidSavings || 0)} runway is in a High-Yield Savings Account.`,
-          `Stop trying to time the market. Consistency beats perfection. Start investing now.`
+          'Cut one recurring subscription today.',
+          'Negotiate your biggest bills.',
+          'Track every dollar for 30 days to find leaks.'
         ]
       };
-    }
-    case 'thinRunway':
-    case 'lowRunway':
+    case 'scenarioB':
       return {
-        blocker: 'You are walking a tightrope without a net. Your emergency runway is dangerously thin.',
+        blocker: `⚡ Cash Drag. You have a massive surplus of ${formatCur(mSurplus)} every month, but it is sitting idle and losing value to inflation.`,
         moves: [
-          `Pause non-essential spending. Your immediate goal is a 3-month runway of ${formatCur(runwayTarget)}.`,
-          `Keep this runway completely separate from your long-term investments.`,
-          `Once fully funded, immediately redirect that cashflow into investments.`
+          'Open a brokerage account today.',
+          'Set up an automated monthly transfer of at least 50% of your surplus into an Index Fund.',
+          'Build a 3-month emergency fund, then invest the rest.'
         ]
       };
-    case 'noSurplus':
-      return {
-        blocker: 'You are living beyond your means (or exactly at them). You are bleeding cash and have zero investable surplus.',
-        moves: [
-          'Find one recurring subscription or fixed expense and ruthlessly cut it today.',
-          'Negotiate your biggest bills: call your car insurance or internet provider right now.',
-          'Track every single dollar you spend for the next 30 days. Find the leaks.'
-        ]
-      };
-    case 'highBurnRate':
-      return {
-        blocker: 'Your lifestyle is too expensive for your income. Your high burn rate is destroying your future freedom.',
-        moves: [
-          'Pick your top 3 expense categories (housing, food, transport) and reduce one by 10%.',
-          'Avoid lifestyle creep. Any future raises must go 100% toward investments.',
-          'Consider extreme moves: downsizing housing or selling a financed car.'
-        ]
-      };
-    case 'lowInvestingRate':
-      return {
-        blocker: `Your savings rate is ${Math.round(calcs.savingsRate * 100)}%. This is too low to build real momentum for early retirement.`,
-        moves: [
-          `Increase your monthly investing by just 1% of your income this month.`,
-          'Automate the transfer right after payday so you never see the money in your checking account.',
-          'Run a "Spend less" scenario below to see how a small cut shaves years off your working life.'
-        ]
-      };
-    case 'default':
+    case 'scenarioC':
     default:
       return {
-        blocker: 'Your main opportunity is increasing your monthly investing consistency.',
+        blocker: 'Optimize & Accelerate. You are on the right path, but can we reach the finish line faster?',
         moves: [
-          'Increase monthly investing by 1% of income this month.',
-          'Automate the transfer right after payday.',
-          'Run one side-income or expense-cut scenario below to compare the impact.'
+          'Try to increase your savings rate by 1% this month.',
+          'Look for ways to increase your active income.',
+          'Review your asset allocation.'
         ]
       };
   }
