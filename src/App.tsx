@@ -1,6 +1,6 @@
 import { useState, FormEvent, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Loader2, ArrowRight, TrendingUp, ShieldCheck, Zap, Mail, Edit3, X, ChevronRight } from 'lucide-react';
+import { Loader2, ArrowRight, ArrowLeft, TrendingUp, ShieldCheck, Zap, Mail, Edit3, X, ChevronRight } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 import type { FinancialSnapshot, ParseResult, FIRECalculations, ActionPlan } from './types';
@@ -587,8 +587,12 @@ export default function App() {
             >
               <div className="flex items-center justify-between">
                 <h2 className="text-3xl font-serif text-[var(--text-primary)]">Your Freedom Plan</h2>
-                <button onClick={() => setResults(null)} className="text-[var(--text-muted)] hover:text-white text-sm font-medium">
-                  Back to Snapshot
+                <button 
+                  onClick={() => setResults(null)} 
+                  className="w-10 h-10 flex items-center justify-center rounded-full bg-[var(--accent)]/10 text-[var(--accent)] hover:bg-[var(--accent)]/20 transition-colors"
+                  aria-label="Back to Snapshot"
+                >
+                  <ArrowLeft className="w-5 h-5" />
                 </button>
               </div>
 
