@@ -97,99 +97,84 @@ export function getInsights(snapshot: FinancialSnapshot, calcs: FIRECalculations
   }
   
   const runwayTarget = (snapshot.monthlyExpenses || 0) * 3;
+  const formatCur = (val: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val);
 
   switch (blocker) {
     case 'highInterestDebt':
       return {
-        blocker: 'High-interest debt is slowing down your progress.',
+        blocker: 'The "Bleeding" Fix. High-interest debt is a financial emergency. Compound interest is working against you.',
         moves: [
-          'List your high-interest balances and interest rates.',
-          'Use part of your monthly surplus to attack the highest-interest balance first.',
-          'Keep a small emergency buffer while avoiding new high-interest debt.'
+          `Stop all investing right now (except employer match) and attack this balance.`,
+          `Use your monthly surplus to aggressively pay down the highest interest rate first.`,
+          'Keep a small $1k-$2k emergency buffer, but otherwise, declare war on this debt.'
         ]
       };
     case 'passiveIncomeCovers':
       return {
-        blocker: 'Your cashflow already covers your expenses.\nNow protect that freedom with a cash runway and long-term invested assets.',
+        blocker: 'You have reached Cashflow Freedom! Your passive income covers your lifestyle.',
         moves: [
-          'Verify that your passive income is stable and repeatable.',
-          `Build at least a 3-month runway: about $${Math.round(runwayTarget).toLocaleString()}.`,
-          'Start turning surplus into long-term invested assets.'
+          'Verify that your passive income is truly stable and repeatable across market cycles.',
+          `Build at least a 3-month cash runway of ${formatCur(runwayTarget)} to protect against income dips.`,
+          'Start optimizing for tax efficiency and long-term asset preservation.'
         ]
       };
     case 'solidRunwayNoInvesting':
-      return {
-        blocker: 'Solid runway, but no invested assets yet.\nYour next opportunity is turning monthly surplus into long-term wealth-building assets.',
-        moves: [
-          'Keep 3-6 months of expenses in liquid savings.',
-          'Start moving new monthly surplus into long-term investments.',
-          `Keep your $${Math.round(snapshot.liquidSavings || 0).toLocaleString()} runway separate from investment accounts.`
-        ]
-      };
     case 'startingFromZero': {
       const surplus = calcs.effectiveMonthlyInvesting;
       return {
-        blocker: 'Strong income, but no wealth base yet.\nYour first job is to turn monthly surplus into runway and invested assets.',
+        blocker: `The "Leaky Bucket" Fix. You are making money, but ${formatCur(surplus)} is sitting idle every month being eaten by inflation.`,
         moves: [
-          `Build your first 3-month runway: about $${Math.round(runwayTarget).toLocaleString()}.`,
-          `Put your next $${Math.round(surplus).toLocaleString()} surplus toward runway first.`,
-          `Once your runway is funded, set an automatic monthly investing rule.`
+          `Set up an auto-transfer of ${formatCur(surplus)} to a broad-market index fund tomorrow morning.`,
+          `Ensure your ${formatCur(snapshot.liquidSavings || 0)} runway is in a High-Yield Savings Account.`,
+          `Stop trying to time the market. Consistency beats perfection. Start investing now.`
         ]
       };
     }
     case 'thinRunway':
+    case 'lowRunway':
       return {
-        blocker: 'Your emergency runway is still thin.',
+        blocker: 'You are walking a tightrope without a net. Your emergency runway is dangerously thin.',
         moves: [
-          `Build your first 3-month runway: about $${Math.round(runwayTarget).toLocaleString()}.`,
-          `Keep this runway separate from your $${Math.round(snapshot.investedAssets || 0).toLocaleString()} long-term investments.`,
-          `Once runway is funded, keep investing your monthly surplus automatically.`
+          `Pause non-essential spending. Your immediate goal is a 3-month runway of ${formatCur(runwayTarget)}.`,
+          `Keep this runway completely separate from your long-term investments.`,
+          `Once fully funded, immediately redirect that cashflow into investments.`
         ]
       };
     case 'noSurplus':
       return {
-        blocker: 'You do not have a positive monthly investing rate yet.',
+        blocker: 'You are living beyond your means (or exactly at them). You are bleeding cash and have zero investable surplus.',
         moves: [
-          'Find one recurring expense to reduce this month.',
-          'Set a minimum automatic investment amount, even if small.',
-          'Track your monthly surplus before making new large purchases.'
+          'Find one recurring subscription or fixed expense and ruthlessly cut it today.',
+          'Negotiate your biggest bills: call your car insurance or internet provider right now.',
+          'Track every single dollar you spend for the next 30 days. Find the leaks.'
         ]
       };
     case 'highBurnRate':
       return {
-        blocker: 'Your expenses take up most of your income.',
+        blocker: 'Your lifestyle is too expensive for your income. Your high burn rate is destroying your future freedom.',
         moves: [
-          'Pick your top 3 expense categories and reduce one by 10%.',
-          'Raise your monthly investing target before lifestyle upgrades.',
-          'Review housing, transport, and subscriptions first.'
-        ]
-      };
-    case 'lowRunway':
-      return {
-        blocker: 'Your emergency runway is still thin.',
-        moves: [
-          'Build at least 3 months of expenses in liquid savings.',
-          'Keep this runway separate from long-term investments.',
-          'Pause non-essential upgrades until your runway improves.'
+          'Pick your top 3 expense categories (housing, food, transport) and reduce one by 10%.',
+          'Avoid lifestyle creep. Any future raises must go 100% toward investments.',
+          'Consider extreme moves: downsizing housing or selling a financed car.'
         ]
       };
     case 'lowInvestingRate':
       return {
-        blocker: 'Your investing rate is too low to build momentum.',
+        blocker: `Your savings rate is ${Math.round(calcs.savingsRate * 100)}%. This is too low to build real momentum for early retirement.`,
         moves: [
-          'Increase monthly investing by 1% of income this month.',
-          'Automate the transfer right after payday.',
-          'Run one side-income or expense-cut scenario to compare impact.'
+          `Increase your monthly investing by just 1% of your income this month.`,
+          'Automate the transfer right after payday so you never see the money in your checking account.',
+          'Run a "Spend less" scenario below to see how a small cut shaves years off your working life.'
         ]
       };
     case 'default':
     default:
       return {
-        blocker: 'Your main opportunity is increasing monthly investing consistency.',
+        blocker: 'Your main opportunity is increasing your monthly investing consistency.',
         moves: [
           'Increase monthly investing by 1% of income this month.',
           'Automate the transfer right after payday.',
-          'Run one side-income or expense-cut scenario to compare impact.'
+          'Run one side-income or expense-cut scenario below to compare the impact.'
         ]
       };
   }

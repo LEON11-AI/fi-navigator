@@ -40,16 +40,16 @@ const getCriticalMissingFields = (snapshot: FinancialSnapshot) => {
   return missing;
 };
 
-const formatCurrency = (val: number | null, currency = 'USD') => {
+const formatCurrency = (val: number | null, _currency = 'USD') => {
   if (val === null || isNaN(val)) return '-';
   try {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: currency || 'USD',
+      currency: 'USD',
       maximumFractionDigits: 0
     }).format(val);
   } catch {
-    return new Intl.NumberFormat('en-US', {
+    return '$' + new Intl.NumberFormat('en-US', {
       maximumFractionDigits: 0
     }).format(val);
   }
@@ -662,21 +662,29 @@ export default function App() {
                 <div className="relative z-10 space-y-8">
                   <div className="space-y-4">
                     <div className="space-y-1">
-                      <div className="text-[var(--text-muted)] text-[10px] uppercase tracking-widest font-semibold">Estimated FIRE Number</div>
-                      <div className="text-4xl sm:text-5xl font-serif font-semibold text-[var(--text-primary)]">{formatCurrency(results.calcs.fiNumber, snapshot.currency)}</div>
+                      <div className="text-[var(--text-muted)] text-[10px] uppercase tracking-widest font-semibold">Years to Freedom</div>
+                      <div className="text-4xl sm:text-5xl font-serif font-semibold text-[var(--text-primary)]">
+                        {results.calcs.yearsToFI !== null ? formatYears(results.calcs.yearsToFI) : '∞ (Rat Race)'}
+                      </div>
                     </div>
                     
                     <p className="text-sm text-[var(--text-muted)] max-w-xl leading-relaxed">
                       {results.calcs.yearsToFI !== null ? (
                         <>
-                          Based on your numbers, your estimated FIRE number is <strong className="text-white font-medium">{formatCurrency(results.calcs.fiNumber, snapshot.currency)}</strong>. At your current pace, you could reach it in about <strong className="text-[var(--accent)] font-medium">{formatYears(results.calcs.yearsToFI)}</strong>.
+                          Your estimated FIRE number is <strong className="text-white font-medium">{formatCurrency(results.calcs.fiNumber)}</strong>. At your current pace, you will buy back your freedom in about <strong className="text-[var(--accent)] font-medium">{formatYears(results.calcs.yearsToFI)}</strong>.
                           {(snapshot.investedAssets === 0 || snapshot.investedAssets === null) && results.calcs.effectiveMonthlyInvesting > 0 && (
-                            <span className="block mt-2">You're starting from $0 invested assets, but your monthly investing power is strong. That's why your path can still be realistic.</span>
+                            <span className="block mt-2">You're starting from $0 invested assets, but your monthly investing power is strong. Consistency is your best asset now.</span>
                           )}
                         </>
                       ) : (
                         <>
-                          Based on your current savings rate, you are not on track to reach your FIRE number yet. Your first priority is creating monthly investable surplus.
+                          <strong className="text-orange-400 font-medium text-base">Currently, you are stuck in the Rat Race forever.</strong>
+                          <span className="block mt-2">
+                            {snapshot.monthlyIncome && snapshot.monthlyExpenses && (snapshot.monthlyIncome - snapshot.monthlyExpenses > 0) ? 
+                              `But wait... you have a surplus of ${formatCurrency(snapshot.monthlyIncome - snapshot.monthlyExpenses)} every month! You just need to deploy it into assets instead of letting it sit idle.` : 
+                              `You are spending exactly what you earn (or more). To buy back your freedom, you must create a gap between your income and expenses.`
+                            }
+                          </span>
                         </>
                       )}
                     </p>
@@ -810,12 +818,24 @@ export default function App() {
                        
                        let changeText = "No change";
                        const curText = formatYears(current);
+                       let impactText = "";
                        
                        if (baseline !== null && current !== null) {
                            const diff = baseline - current;
                            changeText = diff > 0.05 ? `${diff.toFixed(1)} years earlier` : diff < -0.05 ? `${Math.abs(diff).toFixed(1)} years later` : "No change";
+                           
+                           if (diff > 0.05) {
+                               let extra = "";
+                               if (type === 'spend') {
+                                   const targetDrop = baselineResults.calcs.fiNumber - calcs.fiNumber;
+                                   extra = `your FIRE target drops by ${formatCurrency(targetDrop)}, and `;
+                               }
+                               const actionWord = type === 'spend' ? 'cutting' : type === 'invest' ? 'investing' : 'earning';
+                               impactText = `⚡ By ${actionWord} just ${formatCurrency(amount)}/mo, ${extra}you shave ${diff.toFixed(1)} YEARS off your working life!`;
+                           }
                        } else if (baseline === null && current !== null) {
                            changeText = "Now on track to FIRE!";
+                           impactText = `⚡ This single move breaks you out of the Rat Race! You are now on track to FIRE in ${formatYears(current)}.`;
                        } else {
                            changeText = "-";
                        }
@@ -824,6 +844,7 @@ export default function App() {
                          <div className="mt-3 pt-3 border-t border-[var(--accent)]/30 text-xs">
                            <div className="text-[var(--text-primary)] font-medium">New FIRE date: {curText}</div>
                            {changeText !== "-" && changeText !== "No change" && <div className="text-[var(--accent)] mt-0.5">Change: {changeText}</div>}
+                           {impactText && <div className="text-orange-300 font-medium leading-relaxed mt-2 p-2 bg-orange-900/20 rounded-md border border-orange-900/30">{impactText}</div>}
                          </div>
                        );
                      };
