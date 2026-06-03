@@ -964,7 +964,7 @@ export default function App() {
 
       {/* Footer */}
       <footer className="text-center p-8 text-[10px] text-[var(--text-muted)] max-w-2xl mx-auto space-y-4">
-        <p>This tool is for educational planning only, not financial advice. Smart input automatically extracts your numbers, confirmed snapshots are stored in this browser, and waitlist signup stores only contact details and intent.</p>
+        <p><strong className="font-semibold text-[var(--text-primary)]">Disclaimer:</strong> This tool is for educational planning only, not financial advice. Smart input automatically extracts your numbers, confirmed snapshots are stored in this browser, and waitlist signup stores only contact details and intent.</p>
       </footer>
 
       {/* Email Modal */}
