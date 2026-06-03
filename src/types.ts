@@ -51,6 +51,7 @@ export type BlockerType =
   | 'scenarioA'
   | 'scenarioB'
   | 'scenarioC'
+  | 'incomeCeiling'
   | 'default';
 
 export interface ActionPlan {

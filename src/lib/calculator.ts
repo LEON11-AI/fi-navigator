@@ -130,6 +130,8 @@ export function getInsights(snapshot: FinancialSnapshot, calcs: FIRECalculations
     blocker = 'passiveIncomeCovers';
   } else if ((snapshot.investedAssets || 0) >= 100000 && !isInvesting) {
     blocker = 'coastFireMode';
+  } else if (mIncome <= 2000) {
+    blocker = 'incomeCeiling';
   } else if (mSurplus <= 0) {
     blocker = 'scenarioA';
   } else if (mSurplus > 0 && !isInvesting) {
@@ -177,6 +179,15 @@ export function getInsights(snapshot: FinancialSnapshot, calcs: FIRECalculations
           'Your assets are doing the heavy lifting. Ensure they are in a low-cost, diversified index fund.',
           `Avoid lifestyle inflation. Keeping your expenses at ${formatCur(mExpenses)} is the key to maintaining your FIRE trajectory.`,
           "Consider small monthly contributions to accelerate your freedom date, even if it's just $100."
+        ]
+      };
+    case 'incomeCeiling':
+      return {
+        blocker: 'Income Ceiling. You are living lean, but your income is the limiting factor for FIRE.',
+        moves: [
+          'Focus on income expansion. At this income level, increasing your earnings is 10x more powerful than cutting costs.',
+          'Invest in high-ROI skills that can boost your monthly income.',
+          'Consider a side-hustle or a career pivot to break the $2,000/mo barrier.'
         ]
       };
     case 'scenarioA':
