@@ -1134,7 +1134,7 @@ function AssumptionImpact({ snapshot }: { snapshot: FinancialSnapshot }) {
           return (
             <div key={`${item.label}-${item.realReturn}-${item.withdrawalRate}`} className="bg-[#1A1C21] border border-[var(--border)] rounded-lg p-4">
               <div className="text-[10px] uppercase tracking-widest text-[var(--text-muted)] font-semibold">{item.label}</div>
-              <div className="text-lg font-semibold text-white mt-1">{formatYears(calcs.yearsToFI)}</div>
+              <div className="text-lg font-semibold text-white mt-1">{calcs.yearsToFI !== null ? formatYears(calcs.yearsToFI) : '∞ (Rat Race)'}</div>
               <div className="text-xs text-[var(--text-muted)] mt-1">{formatCurrency(calcs.fiNumber, snapshot.currency)} target</div>
               <div className="text-[10px] text-[var(--accent)] mt-3">{item.note}</div>
             </div>
