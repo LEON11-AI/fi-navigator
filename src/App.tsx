@@ -240,10 +240,10 @@ export default function App() {
         </div>
       </nav>
 
-      <main className={cn("mx-auto px-6 pb-24 space-y-12", (!results && !snapshot) ? "max-w-5xl" : "max-w-4xl")}>
+      <main className={cn("mx-auto px-6 pb-12 sm:pb-24 space-y-12", (!results && !snapshot) ? "max-w-5xl" : "max-w-4xl")}>
         {/* HERO & INPUT */}
         {!results && !snapshot && (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center pt-8 pb-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center pt-12 sm:pt-16 pb-4 sm:pb-12">
             <div className="space-y-6">
                <header className="space-y-4">
                   <motion.div 
@@ -963,7 +963,7 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="text-center p-8 text-[10px] text-[var(--text-muted)] max-w-2xl mx-auto space-y-4">
+      <footer className="text-center px-6 py-6 sm:p-8 text-[10px] text-[var(--text-muted)] max-w-2xl mx-auto space-y-4">
         <p><strong className="font-semibold text-[var(--text-primary)]">Disclaimer:</strong> This tool is for educational planning only, not financial advice. Smart input automatically extracts your numbers, confirmed snapshots are stored in this browser, and waitlist signup stores only contact details and intent.</p>
       </footer>
 
