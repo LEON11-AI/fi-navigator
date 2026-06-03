@@ -463,57 +463,70 @@ export default function App() {
                 {(snapshot.debt > 0 || snapshot.hasHighInterestDebt === 'yes') && (
                   <div className="p-4 rounded-xl border border-[var(--border)] bg-[#0D0E12] col-span-1 sm:col-span-2">
                     <label className="block uppercase tracking-widest text-[10px] font-semibold text-[var(--text-muted)] mb-1">High-interest debt</label>
-                    {isEditing && (
-                      <div className="text-[11px] text-[var(--text-muted)] mb-2 opacity-80 leading-snug">
-                        Usually credit cards or personal loans with an interest rate &gt; 8%.
-                      </div>
-                    )}
-                    {isEditing && (
-                      <div className="text-[11px] text-orange-400/80 mb-3 leading-snug flex gap-1">
-                        <Zap className="w-3 h-3 shrink-0 mt-0.5" />
-                        <span>Rates &gt; 8% are toxic to compound interest. Be honest here.</span>
-                      </div>
-                    )}
-                    <div className="space-y-4 mt-2">
-                      <div>
-                        <p className="text-sm text-white mb-2">Is any of this high-interest debt?</p>
-                        <div className="flex flex-wrap gap-2">
-                          {['No / low-interest debt', 'Yes, some is high-interest', 'Not sure'].map((opt) => {
-                            const valMap: any = { 'No / low-interest debt': 'no', 'Yes, some is high-interest': 'yes', 'Not sure': 'not_sure' };
-                            const val = valMap[opt];
-                            const isSelected = snapshot.hasHighInterestDebt === val;
-                            return (
-                              <button
-                                key={opt}
-                                onClick={() => setSnapshot(s => s ? { ...s, hasHighInterestDebt: val, highInterestDebt: val !== 'yes' ? 0 : s.highInterestDebt } : null)}
-                                className={cn("px-4 py-2 rounded-lg border text-sm transition-colors", isSelected ? "border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]" : "border-[var(--border)] bg-[#1A1C21] text-[var(--text-muted)] hover:border-[var(--text-muted)]")}
-                              >
-                                {opt}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      </div>
-                      
-                      {snapshot.hasHighInterestDebt === 'yes' && (
-                        <div className="pt-2 border-t border-[var(--border)]">
-                          <label className="text-sm text-white block mb-2 mt-2">How much high-interest debt do you have?</label>
-                          <div className="relative flex items-center w-full sm:w-1/2">
-                            <span className="absolute left-3 text-[var(--text-muted)] pointer-events-none select-none">$</span>
-                            <input 
-                              type="number"
-                              placeholder="5000"
-                              value={snapshot.highInterestDebt === null ? '' : snapshot.highInterestDebt}
-                              onChange={e => {
-                                 const v = e.target.value;
-                                 setSnapshot(s => s ? ({ ...s, highInterestDebt: v !== '' ? parseFloat(v) : null, highInterestDebtProvided: v !== '' }) : null);
-                              }}
-                              className="bg-[#0D0E12] border border-[var(--border)] text-base font-medium text-white outline-none focus:border-[var(--accent)] rounded-md pl-7 pr-3 py-2 w-full"
-                            />
+                    
+                    {!isEditing ? (
+                      <div className="mt-1">
+                        {snapshot.hasHighInterestDebt === 'yes' ? (
+                          <div className="text-xl font-semibold text-orange-400">
+                            {snapshot.highInterestDebt ? formatCurrency(snapshot.highInterestDebt, 'USD') : 'Yes (amount unknown)'}
                           </div>
+                        ) : snapshot.hasHighInterestDebt === 'no' ? (
+                          <div className="text-lg font-medium text-[var(--text-primary)]">None</div>
+                        ) : (
+                          <div className="text-lg font-medium text-[var(--text-muted)]">Not sure</div>
+                        )}
+                      </div>
+                    ) : (
+                      <>
+                        <div className="text-[11px] text-[var(--text-muted)] mb-2 opacity-80 leading-snug">
+                          Usually credit cards or personal loans with an interest rate &gt; 8%.
                         </div>
-                      )}
-                    </div>
+                        <div className="text-[11px] text-orange-400/80 mb-3 leading-snug flex gap-1">
+                          <Zap className="w-3 h-3 shrink-0 mt-0.5" />
+                          <span>Rates &gt; 8% are toxic to compound interest. Be honest here.</span>
+                        </div>
+                        <div className="space-y-4 mt-2">
+                          <div>
+                            <p className="text-sm text-white mb-2">Is any of this high-interest debt?</p>
+                            <div className="flex flex-wrap gap-2">
+                              {['No / low-interest debt', 'Yes, some is high-interest', 'Not sure'].map((opt) => {
+                                const valMap: any = { 'No / low-interest debt': 'no', 'Yes, some is high-interest': 'yes', 'Not sure': 'not_sure' };
+                                const val = valMap[opt];
+                                const isSelected = snapshot.hasHighInterestDebt === val;
+                                return (
+                                  <button
+                                    key={opt}
+                                    onClick={() => setSnapshot(s => s ? { ...s, hasHighInterestDebt: val, highInterestDebt: val !== 'yes' ? 0 : s.highInterestDebt } : null)}
+                                    className={cn("px-4 py-2 rounded-lg border text-sm transition-colors", isSelected ? "border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)]" : "border-[var(--border)] bg-[#1A1C21] text-[var(--text-muted)] hover:border-[var(--text-muted)]")}
+                                  >
+                                    {opt}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                          
+                          {snapshot.hasHighInterestDebt === 'yes' && (
+                            <div className="pt-2 border-t border-[var(--border)]">
+                              <label className="text-sm text-white block mb-2 mt-2">How much high-interest debt do you have?</label>
+                              <div className="relative flex items-center w-full sm:w-1/2 mt-1">
+                                <span className="absolute left-3 text-[var(--text-muted)] pointer-events-none select-none font-medium">$</span>
+                                <input 
+                                  type="number"
+                                  placeholder="5000"
+                                  value={snapshot.highInterestDebt === null ? '' : snapshot.highInterestDebt}
+                                  onChange={e => {
+                                     const v = e.target.value;
+                                     setSnapshot(s => s ? ({ ...s, highInterestDebt: v !== '' ? parseFloat(v) : null, highInterestDebtProvided: v !== '' }) : null);
+                                  }}
+                                  className="bg-[#0D0E12] border border-[var(--border)] text-base font-medium text-white outline-none focus:border-[var(--accent)] rounded-md pl-7 pr-3 py-2 w-full"
+                                />
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </>
+                    )}
                   </div>
                 )}
                 <SnapshotField 

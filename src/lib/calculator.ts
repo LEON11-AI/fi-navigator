@@ -76,16 +76,18 @@ export function getInsights(snapshot: FinancialSnapshot, calcs: FIRECalculations
   
   const mIncome = snapshot.monthlyIncome || 0;
   const mExpenses = snapshot.monthlyExpenses || 0;
-  const mSurplus = Math.max(mIncome - mExpenses, 0);
+  const mSurplus = mIncome - mExpenses;
   const isInvesting = calcs.effectiveMonthlyInvesting > 0;
   
   const hasHighDebt = (snapshot.highInterestDebt || 0) > 0 || (snapshot.hasHighInterestDebt === 'yes' && (snapshot.debt || 0) > 0 && (snapshot.highInterestDebt === null || snapshot.highInterestDebt > 0));
 
-  if (hasHighDebt) {
+  if (mSurplus < 0 && hasHighDebt) {
+    blocker = 'financialEmergency';
+  } else if (hasHighDebt) {
     blocker = 'highInterestDebt';
   } else if (snapshot.passiveIncome > 0 && snapshot.passiveIncome >= (snapshot.monthlyExpenses || 99999999)) {
     blocker = 'passiveIncomeCovers';
-  } else if (mIncome <= mExpenses) {
+  } else if (mSurplus <= 0) {
     blocker = 'scenarioA';
   } else if (mSurplus > 0 && !isInvesting) {
     blocker = 'scenarioB';
@@ -95,14 +97,24 @@ export function getInsights(snapshot: FinancialSnapshot, calcs: FIRECalculations
   
   const runwayTarget = (snapshot.monthlyExpenses || 0) * 3;
   const formatCur = (val: number) => new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(val);
+  const debtAmount = snapshot.highInterestDebt || snapshot.debt || 0;
 
   switch (blocker) {
+    case 'financialEmergency':
+      return {
+        blocker: '⚡ Financial Emergency Level Red: You are bleeding cash AND drowning in debt.',
+        moves: [
+          `You have a negative cashflow of ${formatCur(Math.abs(mSurplus))} every month. Stop the bleeding! Cut your expenses below your income TODAY.`,
+          `Once your cashflow is positive, attack your ${formatCur(debtAmount)} high-interest debt with everything you have.`,
+          `Sell things you don't need to clear this balance faster. Compound interest is destroying your future.`
+        ]
+      };
     case 'highInterestDebt':
       return {
         blocker: 'The "Bleeding" Fix. High-interest debt is a financial emergency. Compound interest is working against you.',
         moves: [
           `Stop all investing right now (except employer match) and attack this balance.`,
-          `Use your monthly surplus to aggressively pay down the highest interest rate first.`,
+          `Use your monthly surplus to aggressively pay down your ${formatCur(debtAmount)} high-interest debt first.`,
           'Keep a small $1k-$2k emergency buffer, but otherwise, declare war on this debt.'
         ]
       };
