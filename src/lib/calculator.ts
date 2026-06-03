@@ -128,6 +128,8 @@ export function getInsights(snapshot: FinancialSnapshot, calcs: FIRECalculations
     blocker = 'highInterestDebt';
   } else if (snapshot.passiveIncome > 0 && snapshot.passiveIncome >= (snapshot.monthlyExpenses || 99999999)) {
     blocker = 'passiveIncomeCovers';
+  } else if ((snapshot.investedAssets || 0) >= 100000 && !isInvesting) {
+    blocker = 'coastFireMode';
   } else if (mSurplus <= 0) {
     blocker = 'scenarioA';
   } else if (mSurplus > 0 && !isInvesting) {
@@ -166,6 +168,15 @@ export function getInsights(snapshot: FinancialSnapshot, calcs: FIRECalculations
           'Verify that your passive income is truly stable and repeatable across market cycles.',
           `Build at least a 3-month cash runway of ${formatCur(runwayTarget)} to protect against income dips.`,
           'Start optimizing for tax efficiency and long-term asset preservation.'
+        ]
+      };
+    case 'coastFireMode':
+      return {
+        blocker: `Passive Growth. You aren't adding new savings, but your ${formatCur(snapshot.investedAssets || 0)} is generating its own momentum.`,
+        moves: [
+          'Your assets are doing the heavy lifting. Ensure they are in a low-cost, diversified index fund.',
+          `Avoid lifestyle inflation. Keeping your expenses at ${formatCur(mExpenses)} is the key to maintaining your FIRE trajectory.`,
+          "Consider small monthly contributions to accelerate your freedom date, even if it's just $100."
         ]
       };
     case 'scenarioA':

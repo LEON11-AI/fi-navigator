@@ -716,6 +716,9 @@ export default function App() {
                   
                   {(() => {
                     const getStageInfo = (calcs: any) => {
+                      if ((snapshot.investedAssets || 0) >= 100000 && calcs.effectiveMonthlyInvesting <= 0) {
+                        return { stage: "Coast FIRE Mode", next: "Passive compounding" };
+                      }
                       if (calcs.runwayMonths < 3) {
                         return { stage: "Foundation Builder", next: `3-month runway: ${formatCurrency((snapshot.monthlyExpenses || 0) * 3, snapshot.currency)}` };
                       } else if (calcs.fireProgress < 0.25) {

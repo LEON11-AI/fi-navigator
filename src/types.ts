@@ -38,7 +38,9 @@ export interface FIRECalculations {
 
 export type BlockerType = 
   | 'highInterestDebt'
+  | 'financialEmergency'
   | 'passiveIncomeCovers'
+  | 'coastFireMode'
   | 'solidRunwayNoInvesting'
   | 'thinRunway'
   | 'noSurplus' 
@@ -46,6 +48,9 @@ export type BlockerType =
   | 'lowRunway' 
   | 'lowInvestingRate' 
   | 'startingFromZero'
+  | 'scenarioA'
+  | 'scenarioB'
+  | 'scenarioC'
   | 'default';
 
 export interface ActionPlan {
