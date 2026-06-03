@@ -928,28 +928,28 @@ export default function App() {
                       <div key={item} className="text-xs text-[var(--text-primary)] bg-[#1A1C21] border border-[var(--border)] rounded-lg px-3 py-2">{item}</div>
                     ))}
                   </div>
-                  <p className="text-[var(--text-primary)] font-medium text-sm pt-2">
-                    Early access price: $9 for your first full roadmap.
-                  </p>
-                </div>
-                <div className="flex flex-col gap-4 items-center justify-center pt-2">
-                  <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-                    <button onClick={() => { 
-                      console.log('Tracking Event: free_beta_clicked');
-                      openEmailModal('free');
-                    }} className="bg-white/10 hover:bg-white/20 text-white font-semibold px-8 py-3 rounded-lg border border-white/10 transition-colors text-sm w-full sm:w-auto">
-                      Join Free Beta
-                    </button>
-                    <div className="flex flex-col items-center gap-1.5 w-full sm:w-auto">
-                      <button onClick={() => { 
-                        console.log('Tracking Event: paid_roadmap_preview_clicked', { price: 9 });
-                        openEmailModal('paid');
-                      }} className="bg-[var(--accent)] hover:bg-emerald-400 text-black font-semibold px-8 py-3 rounded-lg transition-colors text-sm w-full">
-                        Preview Full Roadmap - $9
-                      </button>
-                      <span className="text-[10px] text-[var(--accent)]/80 font-medium">Early access for the first 50 users</span>
-                    </div>
+                  <div className="pt-2">
+                    <p className="text-[var(--text-primary)] font-medium text-sm">
+                      Early access price: $9 for your first full roadmap.
+                    </p>
+                    <p className="text-[10px] text-[var(--accent)] font-medium mt-1">
+                      Early access for the first 50 users
+                    </p>
                   </div>
+                </div>
+                <div className="flex flex-col sm:flex-row gap-4 items-center justify-center pt-2">
+                  <button onClick={() => { 
+                    console.log('Tracking Event: free_beta_clicked');
+                    openEmailModal('free');
+                  }} className="bg-white/10 hover:bg-white/20 text-white font-semibold px-8 py-3 rounded-lg border border-white/10 transition-colors text-sm w-full sm:w-auto">
+                    Join Free Beta
+                  </button>
+                  <button onClick={() => { 
+                    console.log('Tracking Event: paid_roadmap_preview_clicked', { price: 9 });
+                    openEmailModal('paid');
+                  }} className="bg-[var(--accent)] hover:bg-emerald-400 text-black font-semibold px-8 py-3 rounded-lg transition-colors text-sm w-full sm:w-auto">
+                    Preview Full Roadmap - $9
+                  </button>
                 </div>
                 <p className="text-[11px] text-[var(--text-muted)] mt-1">
                   Signup stores your email, first name, and selected intent. We do not store your full financial snapshot with the waitlist.
