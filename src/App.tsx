@@ -932,7 +932,7 @@ export default function App() {
                     <p className="text-[var(--text-primary)] font-medium text-sm">
                       Early access price: $9 for your first full roadmap.
                     </p>
-                    <p className="text-[10px] text-[var(--accent)] font-medium mt-1">
+                    <p className="text-xs text-[var(--accent)] font-medium mt-1">
                       Early access for the first 50 users
                     </p>
                   </div>
