@@ -2,7 +2,6 @@ import { useState, FormEvent, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Loader2, ArrowRight, ArrowLeft, TrendingUp, ShieldCheck, Zap, Mail, Edit3, X, ChevronRight } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import { usePostHog } from 'posthog-js/react';
 
 import type { FinancialSnapshot, ParseResult, FIRECalculations, ActionPlan } from './types';
 import { calculateFIRE, getInsights } from './lib/calculator';
@@ -82,8 +81,6 @@ export default function App() {
   const [emailSuccess, setEmailSuccess] = useState(false);
   const [emailError, setEmailError] = useState<string | null>(null);
   const [intentType, setIntentType] = useState<'free' | 'paid'>('free');
-
-  const posthog = usePostHog();
 
   // Load from local storage
   useEffect(() => {
@@ -878,7 +875,9 @@ export default function App() {
                   <button 
                     onClick={() => {
                       console.log('Tracking Event: paid_roadmap_fake_door_clicked', { price: 9 });
-                      posthog?.capture('clicked_9_dollar_button');
+                      if (typeof window !== 'undefined' && window.posthog) {
+                        window.posthog.capture('clicked_9_dollar_button');
+                      }
                       openEmailModal('paid');
                     }}
                     className="bg-[var(--accent)] hover:bg-emerald-400 text-black font-semibold px-8 py-3 rounded-lg transition-colors text-sm w-full sm:w-auto text-center"

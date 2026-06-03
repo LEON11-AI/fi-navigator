@@ -17,6 +17,12 @@ export interface FinancialSnapshot {
   currency: string;
 }
 
+declare global {
+  interface Window {
+    posthog: any;
+  }
+}
+
 export interface ParseResult extends FinancialSnapshot {
   confidence?: 'high' | 'medium' | 'low';
   missingFields?: string[];
