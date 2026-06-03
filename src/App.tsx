@@ -939,7 +939,7 @@ export default function App() {
                       const userName = fd.get('firstName') as string || 'Not provided';
                       
                       // Change this to your actual receiving email address
-                      const targetEmail = "leon273326413@gmail.com"; 
+                      const targetEmail = "273326413@qq.com"; 
                       const subject = encodeURIComponent(`New Waitlist Submission: ${userEmail}`);
                       const body = encodeURIComponent(`Name: ${userName}\nEmail: ${userEmail}`);
                       
