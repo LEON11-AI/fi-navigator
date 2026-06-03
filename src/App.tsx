@@ -428,6 +428,7 @@ export default function App() {
                     fieldKey="monthlyInvesting" 
                     isEditing={isEditing} 
                     setSnapshot={setSnapshot} 
+                    microcopy="Money you plan to put into assets every month."
                     hint={snapshot.monthlyInvesting === null ? "Calculated from income minus expenses. Edit to override." : undefined}
                   />
                 ) : null}
@@ -497,16 +498,19 @@ export default function App() {
                       {snapshot.hasHighInterestDebt === 'yes' && (
                         <div className="pt-2 border-t border-[var(--border)]">
                           <label className="text-sm text-white block mb-2 mt-2">How much high-interest debt do you have?</label>
-                          <input 
-                            type="number"
-                            placeholder="e.g., $5,000"
-                            value={snapshot.highInterestDebt === null ? '' : snapshot.highInterestDebt}
-                            onChange={e => {
-                               const v = e.target.value;
-                               setSnapshot(s => s ? ({ ...s, highInterestDebt: v !== '' ? parseFloat(v) : null, highInterestDebtProvided: v !== '' }) : null);
-                            }}
-                            className="bg-[#0D0E12] border border-[var(--border)] text-base font-medium text-white outline-none focus:border-[var(--accent)] rounded-md px-3 py-2 w-full sm:w-1/2"
-                          />
+                          <div className="relative flex items-center w-full sm:w-1/2">
+                            <span className="absolute left-3 text-[var(--text-muted)] pointer-events-none select-none">$</span>
+                            <input 
+                              type="number"
+                              placeholder="5000"
+                              value={snapshot.highInterestDebt === null ? '' : snapshot.highInterestDebt}
+                              onChange={e => {
+                                 const v = e.target.value;
+                                 setSnapshot(s => s ? ({ ...s, highInterestDebt: v !== '' ? parseFloat(v) : null, highInterestDebtProvided: v !== '' }) : null);
+                              }}
+                              className="bg-[#0D0E12] border border-[var(--border)] text-base font-medium text-white outline-none focus:border-[var(--accent)] rounded-md pl-7 pr-3 py-2 w-full"
+                            />
+                          </div>
                         </div>
                       )}
                     </div>
@@ -571,14 +575,11 @@ export default function App() {
                       </div>
                     )}
                     
-                    <details className="group">
-                        <summary className="cursor-pointer text-xs font-semibold tracking-widest text-[var(--text-muted)] uppercase flex items-center gap-2 select-none hover:text-[var(--text-primary)] transition-colors w-max">
-                          <ChevronRight className="w-4 h-4 group-open:rotate-90 transition-transform" />
-                          Assumptions
+                    <details className="group bg-[#1A1C21]/50 border border-[var(--border)] rounded-xl p-4">
+                        <summary className="cursor-pointer text-xs font-semibold tracking-wide text-[var(--text-muted)] flex items-center gap-2 select-none hover:text-[var(--text-primary)] transition-colors">
+                          <ChevronRight className="w-4 h-4 group-open:rotate-90 transition-transform shrink-0" />
+                          <span><span className="mr-1">⚙️</span> Assumptions: Using standard FIRE rules (3% withdrawal, 4% return). Click to adjust.</span>
                         </summary>
-                        <p className="text-[11px] text-[var(--text-muted)] pl-6 mt-1.5 opacity-80">
-                          We use common FIRE defaults. You can adjust them anytime.
-                        </p>
                         <div className="mt-4 grid grid-cols-1 gap-4 text-sm pl-6 max-w-sm">
                           <label className="flex items-center justify-between gap-4">
                             <span className="text-[var(--text-muted)]">Expected annual real return</span>
@@ -1042,19 +1043,22 @@ function SnapshotField({ label, val, fieldKey, isEditing, setSnapshot, isMissing
       )}
 
       {isEditing ? (
-        <input 
-          type="number"
-          value={val === null ? '' : val}
-          onChange={e => {
-             const v = e.target.value;
-             setSnapshot((s: any) => ({ 
-               ...s, 
-               [fieldKey]: v !== '' ? parseFloat(v) : null,
-               [`${fieldKey}Provided`]: v !== ''
-             }));
-          }}
-          className="w-full bg-[#0D0E12] border border-[var(--border)] text-lg font-medium text-white outline-none focus:border-[var(--accent)] rounded-md px-2 py-1 mt-1"
-        />
+        <div className="relative flex items-center mt-1">
+          <span className="absolute left-3 text-[var(--text-muted)] pointer-events-none select-none font-medium">$</span>
+          <input 
+            type="number"
+            value={val === null ? '' : val}
+            onChange={e => {
+               const v = e.target.value;
+               setSnapshot((s: any) => ({ 
+                 ...s, 
+                 [fieldKey]: v !== '' ? parseFloat(v) : null,
+                 [`${fieldKey}Provided`]: v !== ''
+               }));
+            }}
+            className="w-full bg-[#0D0E12] border border-[var(--border)] text-lg font-medium text-white outline-none focus:border-[var(--accent)] rounded-md pl-7 pr-2 py-1"
+          />
+        </div>
       ) : (
         <div className="text-xl font-semibold text-[var(--text-primary)]">
            {isMissing ? <span className="text-orange-400 text-base font-normal flex items-center gap-1.5"><Zap className="w-4 h-4" /> Needed</span> : formatCurrency(val)}
