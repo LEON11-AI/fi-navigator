@@ -56,7 +56,8 @@ const formatCurrency = (val: number | null, _currency = 'USD') => {
 };
 
 const formatYears = (years: number | null) => {
-  if (years === null) return 'Need more surplus';
+  if (years === null) return '∞ (Rat Race)';
+  if (years >= 100) return '∞ (Rat Race)';
   if (years >= 80) return '80+ years';
   if (years === 0) return 'Already there';
   return `${years.toFixed(1)} years`;
@@ -675,19 +676,29 @@ export default function App() {
                 <div className="relative z-10 space-y-8">
                   <div className="space-y-4">
                     <div className="space-y-1">
-                      <div className="text-[var(--text-muted)] text-[10px] uppercase tracking-widest font-semibold">Years to Freedom</div>
+                      <div className="text-[var(--text-muted)] text-[10px] uppercase tracking-widest font-semibold">
+                        {(results.calcs.yearsToFI === null || results.calcs.yearsToFI >= 100) && results.calcs.potentialYearsToFI !== null ? 'Potential Years to Freedom' : 'Years to Freedom'}
+                      </div>
                       <div className="text-4xl sm:text-5xl font-serif font-semibold text-[var(--text-primary)]">
-                        {results.calcs.yearsToFI !== null ? formatYears(results.calcs.yearsToFI) : '∞ (Rat Race)'}
+                        {results.calcs.yearsToFI !== null && results.calcs.yearsToFI < 100 ? formatYears(results.calcs.yearsToFI) : 
+                         (results.calcs.potentialYearsToFI !== null ? formatYears(results.calcs.potentialYearsToFI) : '∞ (Rat Race)')}
                       </div>
                     </div>
                     
                     <p className="text-sm text-[var(--text-muted)] max-w-xl leading-relaxed">
-                      {results.calcs.yearsToFI !== null ? (
+                      {results.calcs.yearsToFI !== null && results.calcs.yearsToFI < 100 ? (
                         <>
                           Your estimated FIRE number is <strong className="text-white font-medium">{formatCurrency(results.calcs.fiNumber)}</strong>. At your current pace, you will buy back your freedom in about <strong className="text-[var(--accent)] font-medium">{formatYears(results.calcs.yearsToFI)}</strong>.
                           {(snapshot.investedAssets === 0 || snapshot.investedAssets === null) && results.calcs.effectiveMonthlyInvesting > 0 && (
                             <span className="block mt-2">You're starting from $0 invested assets, but your monthly investing power is strong. Consistency is your best asset now.</span>
                           )}
+                        </>
+                      ) : results.calcs.potentialYearsToFI !== null ? (
+                        <>
+                          <strong className="text-orange-400 font-medium text-base">You are Rich in Cash, Poor in Strategy.</strong>
+                          <span className="block mt-2">
+                            You have enough capital to potentially reach FIRE in <strong className="text-[var(--accent)]">{formatYears(results.calcs.potentialYearsToFI)}</strong> if you start deploying your cash today. Stop letting inflation eat your savings!
+                          </span>
                         </>
                       ) : (
                         <>
@@ -1134,7 +1145,11 @@ function AssumptionImpact({ snapshot }: { snapshot: FinancialSnapshot }) {
           return (
             <div key={`${item.label}-${item.realReturn}-${item.withdrawalRate}`} className="bg-[#1A1C21] border border-[var(--border)] rounded-lg p-4">
               <div className="text-[10px] uppercase tracking-widest text-[var(--text-muted)] font-semibold">{item.label}</div>
-              <div className="text-lg font-semibold text-white mt-1">{calcs.yearsToFI !== null ? formatYears(calcs.yearsToFI) : '∞ (Rat Race)'}</div>
+              <div className="text-lg font-semibold text-white mt-1">
+                {calcs.yearsToFI !== null && calcs.yearsToFI < 100 
+                  ? formatYears(calcs.yearsToFI) 
+                  : (calcs.potentialYearsToFI !== null ? formatYears(calcs.potentialYearsToFI) : '∞ (Rat Race)')}
+              </div>
               <div className="text-xs text-[var(--text-muted)] mt-1">{formatCurrency(calcs.fiNumber, snapshot.currency)} target</div>
               <div className="text-[10px] text-[var(--accent)] mt-3">{item.note}</div>
             </div>

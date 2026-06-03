@@ -58,6 +58,46 @@ export function calculateFIRE(snapshot: FinancialSnapshot): FIRECalculations {
     }
   }
 
+  // Calculate potentialYearsToFI
+  let potentialYearsToFI: number | null = null;
+  const potentialInvested = invested + (snapshot.liquidSavings || 0);
+  const potentialInvesting = Math.max(effMonthlyInvesting, mSurplus);
+  
+  if (potentialInvested >= fiNumber && fiNumber > 0) {
+    potentialYearsToFI = 0;
+  } else if (potentialInvesting > 0 || potentialInvested > 0) {
+    const annualReturn = snapshot.expectedAnnualRealReturn !== null ? snapshot.expectedAnnualRealReturn : 0.04;
+    if (annualReturn <= 0) {
+      if (potentialInvesting > 0) {
+        const months = Math.max(0, (fiNumber - potentialInvested) / potentialInvesting);
+        potentialYearsToFI = months / 12;
+      }
+    } else {
+      const monthlyRate = Math.pow(1 + annualReturn, 1 / 12) - 1;
+      let low = 0;
+      let high = 100 * 12; // 100 years max
+      let foundMonths = high;
+      
+      while (low <= high) {
+        const mid = Math.floor((low + high) / 2);
+        const futureValue = potentialInvested * Math.pow(1 + monthlyRate, mid) 
+          + potentialInvesting * ((Math.pow(1 + monthlyRate, mid) - 1) / monthlyRate);
+          
+        if (futureValue >= fiNumber) {
+          foundMonths = mid;
+          high = mid - 1;
+        } else {
+          low = mid + 1;
+        }
+      }
+      potentialYearsToFI = foundMonths / 12;
+    }
+  }
+
+  if (potentialYearsToFI !== null && potentialYearsToFI >= 100) {
+    potentialYearsToFI = null;
+  }
+
   return {
     monthlySurplus: mSurplus,
     effectiveMonthlyInvesting: effMonthlyInvesting,
@@ -67,7 +107,8 @@ export function calculateFIRE(snapshot: FinancialSnapshot): FIRECalculations {
     cashflowFreedom,
     runwayMonths,
     savingsRate,
-    yearsToFI
+    yearsToFI,
+    potentialYearsToFI
   };
 }
 

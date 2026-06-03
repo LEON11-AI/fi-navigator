@@ -33,6 +33,7 @@ export interface FIRECalculations {
   runwayMonths: number;
   savingsRate: number;
   yearsToFI: number | null;
+  potentialYearsToFI: number | null;
 }
 
 export type BlockerType = 
