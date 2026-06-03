@@ -402,8 +402,24 @@ export default function App() {
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pb-4">
-                <SnapshotField label="Monthly Income" val={snapshot.monthlyIncome} fieldKey="monthlyIncome" isEditing={isEditing} setSnapshot={setSnapshot} />
-                <SnapshotField label="Monthly Expenses" val={snapshot.monthlyExpenses} fieldKey="monthlyExpenses" isEditing={isEditing} setSnapshot={setSnapshot} isMissing={missingFields.includes('monthlyExpenses') && (snapshot.monthlyExpenses === null || Number.isNaN(snapshot.monthlyExpenses))} />
+                <SnapshotField 
+                  label="Monthly Income" 
+                  val={snapshot.monthlyIncome} 
+                  fieldKey="monthlyIncome" 
+                  isEditing={isEditing} 
+                  setSnapshot={setSnapshot}
+                  microcopy="Your take-home pay after taxes."
+                  pitfall="Don't use pre-tax income, or your cashflow will be artificially high."
+                />
+                <SnapshotField 
+                  label="Monthly Expenses" 
+                  val={snapshot.monthlyExpenses} 
+                  fieldKey="monthlyExpenses" 
+                  isEditing={isEditing} 
+                  setSnapshot={setSnapshot} 
+                  isMissing={missingFields.includes('monthlyExpenses') && (snapshot.monthlyExpenses === null || Number.isNaN(snapshot.monthlyExpenses))}
+                  microcopy="Rent, groceries, bills, and fun money."
+                />
                 
                 {snapshot.monthlyIncome && snapshot.monthlyExpenses ? (
                   <SnapshotField 
@@ -423,14 +439,41 @@ export default function App() {
                   isEditing={isEditing} 
                   setSnapshot={setSnapshot} 
                   isMissing={missingFields.includes('investedAssets') && (snapshot.investedAssets === null || Number.isNaN(snapshot.investedAssets))} 
-                  hint={snapshot.investedAssets === 0 ? "Starting from $0 is okay. We'll calculate your path from today." : undefined}
+                  microcopy="Stocks, ETFs, Crypto, or Real Estate (excluding primary home)."
+                  pitfall="Your primary home is a liability, not an income-producing asset."
                 />
-                <SnapshotField label="Liquid Savings" val={snapshot.liquidSavings} fieldKey="liquidSavings" isEditing={isEditing} setSnapshot={setSnapshot} />
-                <SnapshotField label="Total Debt" val={snapshot.debt} fieldKey="debt" isEditing={isEditing} setSnapshot={setSnapshot} />
+                <SnapshotField 
+                  label="Liquid Savings" 
+                  val={snapshot.liquidSavings} 
+                  fieldKey="liquidSavings" 
+                  isEditing={isEditing} 
+                  setSnapshot={setSnapshot}
+                  microcopy="Cash you can access immediately (Checking, Savings, Emergency fund)."
+                  pitfall="Do not include locked term deposits."
+                />
+                <SnapshotField 
+                  label="Total Debt" 
+                  val={snapshot.debt} 
+                  fieldKey="debt" 
+                  isEditing={isEditing} 
+                  setSnapshot={setSnapshot}
+                  microcopy="Mortgages, student loans, car loans, etc."
+                />
                 {(snapshot.debt > 0 || snapshot.hasHighInterestDebt === 'yes') && (
                   <div className="p-4 rounded-xl border border-[var(--border)] bg-[#0D0E12] col-span-1 sm:col-span-2">
-                    <label className="block uppercase tracking-widest text-[10px] font-semibold text-[var(--text-muted)] mb-3">High-interest debt</label>
-                    <div className="space-y-4">
+                    <label className="block uppercase tracking-widest text-[10px] font-semibold text-[var(--text-muted)] mb-1">High-interest debt</label>
+                    {isEditing && (
+                      <div className="text-[11px] text-[var(--text-muted)] mb-2 opacity-80 leading-snug">
+                        Usually credit cards or personal loans with an interest rate &gt; 8%.
+                      </div>
+                    )}
+                    {isEditing && (
+                      <div className="text-[11px] text-orange-400/80 mb-3 leading-snug flex gap-1">
+                        <Zap className="w-3 h-3 shrink-0 mt-0.5" />
+                        <span>Rates &gt; 8% are toxic to compound interest. Be honest here.</span>
+                      </div>
+                    )}
+                    <div className="space-y-4 mt-2">
                       <div>
                         <p className="text-sm text-white mb-2">Is any of this high-interest debt?</p>
                         <div className="flex flex-wrap gap-2">
@@ -469,7 +512,14 @@ export default function App() {
                     </div>
                   </div>
                 )}
-                <SnapshotField label="Passive Income" val={snapshot.passiveIncome} fieldKey="passiveIncome" isEditing={isEditing} setSnapshot={setSnapshot} />
+                <SnapshotField 
+                  label="Passive Income" 
+                  val={snapshot.passiveIncome} 
+                  fieldKey="passiveIncome" 
+                  isEditing={isEditing} 
+                  setSnapshot={setSnapshot}
+                  microcopy="Money earned without actively working for it (e.g., dividends, rental income)."
+                />
               </div>
 
               {/* Missing Info Prompts */}
@@ -971,12 +1021,26 @@ export default function App() {
   );
 }
 
-function SnapshotField({ label, val, fieldKey, isEditing, setSnapshot, isMissing = false, hint }: any) {
+function SnapshotField({ label, val, fieldKey, isEditing, setSnapshot, isMissing = false, hint, microcopy, pitfall }: any) {
   if (!isEditing && val === null && !isMissing) return null; // Don't show empty optional fields when viewing
 
   return (
     <div className={cn("p-4 rounded-xl border relative bg-[#0D0E12]", isMissing ? "border-orange-900/50 bg-orange-900/10" : "border-[var(--border)]")}>
       <label className="block uppercase tracking-widest text-[10px] font-semibold text-[var(--text-muted)] mb-1">{label}</label>
+      
+      {isEditing && microcopy && (
+        <div className="text-[11px] text-[var(--text-muted)] mb-2 opacity-80 leading-snug">
+          {microcopy}
+        </div>
+      )}
+      
+      {isEditing && pitfall && (
+        <div className="text-[11px] text-orange-400/80 mb-3 leading-snug flex gap-1">
+          <Zap className="w-3 h-3 shrink-0 mt-0.5" />
+          <span>{pitfall}</span>
+        </div>
+      )}
+
       {isEditing ? (
         <input 
           type="number"
