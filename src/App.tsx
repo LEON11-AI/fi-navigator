@@ -965,7 +965,7 @@ export default function App() {
                     <p className="text-[var(--text-muted)] text-sm">
                       {intentType === 'paid' 
                         ? 'Our payment system is currently undergoing compliance review and we cannot accept payments today. But since you were ready to buy, leave your email below. I will send you the $9 Roadmap for FREE (or with a massive early-bird discount) the moment we go live.'
-                        : 'Enter your email to join our free newsletter for FIRE tips.'}
+                        : 'Join our free newsletter for occasional FIRE tips, market stress tests, and product updates.'}
                     </p>
                   </div>
 
@@ -995,7 +995,7 @@ export default function App() {
                     disabled={emailSubmitting}
                     className="w-full bg-[var(--accent)] text-black font-semibold py-3.5 rounded-lg hover:bg-emerald-400 disabled:opacity-50 transition-colors"
                   >
-                    {emailSubmitting ? <Loader2 className="w-5 h-5 mx-auto animate-spin" /> : (intentType === 'paid' ? "Get on the VIP List" : "Join Newsletter")}
+                    {emailSubmitting ? <Loader2 className="w-5 h-5 mx-auto animate-spin" /> : (intentType === 'paid' ? "Get on the VIP List" : "Join Now")}
                   </button>
                 </form>
               ) : (
