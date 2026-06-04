@@ -1339,8 +1339,8 @@ function ProgressCard({ title, percentage, value, unit, description, color, note
 
 function ScenarioCard({ label, sub, amountLabel, amount, isActive, activeContent, onClick, onAmountChange }: any) {
   return (
-    <div className={cn("p-4 rounded-xl border text-left transition-all", isActive ? "border-[var(--accent)] bg-[var(--accent)]/10 ring-1 ring-[var(--accent)]/50" : "border-[var(--border)] bg-[#1A1C21] hover:border-[var(--accent)] hover:bg-[var(--accent)]/5")}>
-      <button type="button" onClick={onClick} className="w-full text-left">
+    <div className={cn("p-4 rounded-xl border text-left transition-all duration-300 ease-in-out", isActive ? "border-[var(--accent)] bg-[var(--accent)]/10 ring-1 ring-[var(--accent)]/50" : "border-[var(--border)] bg-transparent hover:border-[var(--accent)]/60 hover:bg-[var(--accent)]/5 hover:-translate-y-1 hover:shadow-lg")}>
+      <button type="button" onClick={onClick} className="w-full text-left cursor-pointer">
         <div className="font-semibold text-sm text-[var(--text-primary)] mb-0.5">{label}</div>
         <div className="text-xs text-[var(--text-muted)]">{sub}</div>
       </button>
@@ -1354,7 +1354,7 @@ function ScenarioCard({ label, sub, amountLabel, amount, isActive, activeContent
             step="50"
             value={amount}
             onChange={e => onAmountChange(Math.max(0, Number(e.target.value) || 0))}
-            className="w-full bg-[#0D0E12] border border-[var(--border)] rounded-md py-1.5 pl-5 pr-2 text-right text-white outline-none focus:border-[var(--accent)]"
+            className="w-full bg-transparent border border-[var(--border)] rounded-md py-1.5 pl-5 pr-2 text-right text-white outline-none focus:border-[var(--accent)] transition-colors duration-300"
           />
         </div>
       </label>
