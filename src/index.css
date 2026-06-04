@@ -7,12 +7,12 @@
 }
 
 :root {
-  --bg: #0A0B0D;
-  --surface: #14161A;
-  --border: #262A31;
-  --accent: #10B981;
-  --text-muted: #8E9299;
-  --text-primary: #F1F1F1;
+  --bg: #000000;
+  --surface: #111111;
+  --border: #27272a;
+  --accent: #00FF66;
+  --text-muted: #A1A1AA;
+  --text-primary: #FFFFFF;
 }
 
 body {
@@ -23,5 +23,5 @@ body {
 .glass {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 16px;
 }

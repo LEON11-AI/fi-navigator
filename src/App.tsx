@@ -252,7 +252,7 @@ export default function App() {
                   </motion.div>
                   <motion.h1 
                     initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-                    className="text-3xl sm:text-4xl font-serif tracking-tight text-[var(--text-primary)] leading-tight"
+                    className="text-3xl sm:text-4xl font-bold tracking-tight text-white leading-tight"
                   >
                     Know Your FIRE Number in 60 Seconds.
                   </motion.h1>
@@ -283,7 +283,7 @@ export default function App() {
                      value={inputText}
                      onChange={e => setInputText(e.target.value)}
                      placeholder="e.g., I earn $8k/month, spend $4.5k, have $120k invested, $20k cash..."
-                     className="w-full h-32 p-4 text-base bg-[#0D0E12] border border-[var(--border)] rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)] text-[var(--text-primary)] placeholder-[var(--text-muted)] opacity-60 focus:opacity-100 leading-relaxed transition-all appearance-none"
+                     className="w-full h-32 p-4 text-base bg-transparent border border-[var(--border)] rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)] text-white placeholder-[var(--text-muted)] opacity-60 focus:opacity-100 leading-relaxed transition-all appearance-none"
                    />
                    <div className="flex justify-center items-center gap-3">
                      {isParsing && <Loader2 className="w-4 h-4 text-[var(--accent)] animate-spin" />}
@@ -328,15 +328,15 @@ export default function App() {
                 <div className="flex justify-between items-end border-b border-[var(--border)] pb-4">
                   <div>
                     <div className="text-[10px] uppercase tracking-widest text-[var(--text-muted)] mb-1 font-semibold">Estimated FIRE Number</div>
-                    <div className="text-3xl font-serif text-[var(--text-primary)]">$1,200,000</div>
+                    <div className="text-3xl font-bold tracking-tight text-white">$1,200,000</div>
                   </div>
                   <div className="text-right">
                      <div className="text-[10px] uppercase tracking-widest text-[var(--accent)] mb-1 font-semibold">Time to FI</div>
-                     <div className="text-xl font-semibold text-[var(--accent)]">14 Years</div>
+                     <div className="text-xl font-bold tracking-tight text-[var(--accent)]">14 Years</div>
                   </div>
                 </div>
 
-                <div className="bg-[#1A1C21] rounded-lg p-3 border border-[var(--border)] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+                <div className="bg-transparent rounded-lg p-3 border border-[var(--border)] flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                    <div className="flex flex-col">
                       <span className="text-[10px] uppercase tracking-widest text-[var(--text-muted)] font-semibold mb-0.5">Current Stage</span>
                       <span className="text-xs font-semibold text-white">Foundation Builder</span>
@@ -363,7 +363,7 @@ export default function App() {
                   </div>
                 </div>
 
-                <div className="bg-[#0D0E12] p-4 rounded-xl border border-[var(--border)] mt-0">
+                <div className="bg-transparent p-4 rounded-xl border border-[var(--border)] mt-0">
                   <div className="text-[10px] uppercase tracking-widest text-[var(--text-muted)] mb-3 font-semibold">Next Money Move</div>
                   <div className="text-sm font-medium text-white flex items-center gap-3">
                     <div className="w-6 h-6 rounded-full bg-[var(--accent)] text-black flex items-center justify-center text-xs font-bold shrink-0">1</div>
@@ -388,7 +388,7 @@ export default function App() {
               className="glass p-6 sm:p-8 space-y-8"
             >
               <div className="border-b border-[var(--border)] pb-4">
-                <h3 className="text-2xl font-bold text-[var(--text-primary)]">Financial Snapshot</h3>
+                <h3 className="text-2xl font-bold tracking-tight text-white">Financial Snapshot</h3>
                 <p className="text-[var(--text-muted)] mt-1">Tap any number to edit before we calculate. Your confirmed snapshot stays in this browser unless you clear it.</p>
               </div>
 
@@ -498,7 +498,7 @@ export default function App() {
                                 f === 'targetMonthlySpending' ? 'e.g., $6,000/month' :
                                 'e.g., $4,500/month'
                               }
-                              className="p-2.5 border border-[var(--border)] rounded-lg bg-[#0D0E12] text-white w-full sm:w-1/2 focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)] outline-none"
+                              className="p-2.5 border border-[var(--border)] rounded-lg bg-transparent text-white w-full sm:w-1/2 focus:ring-2 focus:ring-[var(--accent)] focus:border-[var(--accent)] outline-none"
                               onChange={e => {
                                 const v = e.target.value;
                                 setSnapshot(s => s ? ({ 
@@ -513,7 +513,7 @@ export default function App() {
                       </div>
                     )}
                     
-                    <details className="group bg-[#1A1C21]/50 border border-[var(--border)] rounded-xl p-4">
+                    <details className="group bg-transparent border border-[var(--border)] rounded-xl p-4">
                         <summary className="cursor-pointer text-xs font-semibold tracking-wide text-[var(--text-muted)] flex items-center gap-2 select-none hover:text-[var(--text-primary)] transition-colors">
                           <ChevronRight className="w-4 h-4 group-open:rotate-90 transition-transform shrink-0" />
                           <span><span className="mr-1">⚙️</span> Assumptions: Using standard FIRE rules (3% withdrawal, 4% return). Click to adjust.</span>
@@ -522,14 +522,14 @@ export default function App() {
                           <label className="flex items-center justify-between gap-4">
                             <span className="text-[var(--text-muted)]">Expected annual real return</span>
                             <div className="relative flex items-center">
-                              <input type="number" step="0.1" value={snapshot.expectedAnnualRealReturn !== null ? Math.round(snapshot.expectedAnnualRealReturn * 1000) / 10 : ''} placeholder="4" onChange={e => setSnapshot(s => s ? {...s, expectedAnnualRealReturn: e.target.value ? parseFloat(e.target.value) / 100 : null} : null)} className="w-24 p-1.5 pr-6 text-right bg-[#0D0E12] border border-[var(--border)] rounded text-white outline-none focus:border-[var(--accent)]" />
+                              <input type="number" step="0.1" value={snapshot.expectedAnnualRealReturn !== null ? Math.round(snapshot.expectedAnnualRealReturn * 1000) / 10 : ''} placeholder="4" onChange={e => setSnapshot(s => s ? {...s, expectedAnnualRealReturn: e.target.value ? parseFloat(e.target.value) / 100 : null} : null)} className="w-24 p-1.5 pr-6 text-right bg-transparent border border-[var(--border)] rounded text-white outline-none focus:border-[var(--accent)]" />
                               <span className="absolute right-2 text-[var(--text-muted)] text-sm pointer-events-none">%</span>
                             </div>
                           </label>
                           <label className="flex items-center justify-between gap-4">
                             <span className="text-[var(--text-muted)]">Safe withdrawal rate</span>
                             <div className="relative flex items-center">
-                              <input type="number" step="0.1" value={snapshot.safeWithdrawalRate !== null ? Math.round(snapshot.safeWithdrawalRate * 1000) / 10 : ''} placeholder="3" onChange={e => setSnapshot(s => s ? {...s, safeWithdrawalRate: e.target.value ? parseFloat(e.target.value) / 100 : null} : null)} className="w-24 p-1.5 pr-6 text-right bg-[#0D0E12] border border-[var(--border)] rounded text-white outline-none focus:border-[var(--accent)]" />
+                              <input type="number" step="0.1" value={snapshot.safeWithdrawalRate !== null ? Math.round(snapshot.safeWithdrawalRate * 1000) / 10 : ''} placeholder="3" onChange={e => setSnapshot(s => s ? {...s, safeWithdrawalRate: e.target.value ? parseFloat(e.target.value) / 100 : null} : null)} className="w-24 p-1.5 pr-6 text-right bg-transparent border border-[var(--border)] rounded text-white outline-none focus:border-[var(--accent)]" />
                               <span className="absolute right-2 text-[var(--text-muted)] text-sm pointer-events-none">%</span>
                             </div>
                           </label>
@@ -537,7 +537,7 @@ export default function App() {
                             <span className="text-[var(--text-muted)]">Target FI spending/mo</span>
                             <div className="relative flex items-center">
                               <span className="absolute left-2 text-[var(--text-muted)] text-sm pointer-events-none">$</span>
-                              <input type="number" value={snapshot.targetMonthlySpending ?? ''} placeholder={snapshot.monthlyExpenses?.toString() || "3000"} onChange={e => setSnapshot(s => s ? {...s, targetMonthlySpending: e.target.value ? parseFloat(e.target.value) : null} : null)} className="w-28 p-1.5 pl-6 text-right bg-[#0D0E12] border border-[var(--border)] rounded text-white outline-none focus:border-[var(--accent)]" />
+                              <input type="number" value={snapshot.targetMonthlySpending ?? ''} placeholder={snapshot.monthlyExpenses?.toString() || "3000"} onChange={e => setSnapshot(s => s ? {...s, targetMonthlySpending: e.target.value ? parseFloat(e.target.value) : null} : null)} className="w-28 p-1.5 pl-6 text-right bg-transparent border border-[var(--border)] rounded text-white outline-none focus:border-[var(--accent)]" />
                             </div>
                           </label>
                         </div>
@@ -586,7 +586,7 @@ export default function App() {
               className="space-y-8"
             >
               <div className="flex items-center justify-between">
-                <h2 className="text-3xl font-serif text-[var(--text-primary)]">Your Freedom Plan</h2>
+                <h2 className="text-3xl font-bold tracking-tight text-white">Your Freedom Plan</h2>
                 <button 
                   onClick={() => setResults(null)} 
                   className="w-10 h-10 flex items-center justify-center rounded-full bg-[var(--accent)]/10 text-[var(--accent)] hover:bg-[var(--accent)]/20 transition-colors"
@@ -607,7 +607,7 @@ export default function App() {
                       <div className="text-[var(--text-muted)] text-[10px] uppercase tracking-widest font-semibold">
                         {(results.calcs.yearsToFI === null || results.calcs.yearsToFI >= 100) && results.calcs.potentialYearsToFI !== null ? 'Potential Years to Freedom' : 'Years to Freedom'}
                       </div>
-                      <div className="text-4xl sm:text-5xl font-serif font-semibold text-[var(--text-primary)]">
+                      <div className="text-4xl sm:text-5xl font-bold tracking-tight text-white">
                         {results.calcs.yearsToFI !== null && results.calcs.yearsToFI < 100 ? formatYears(results.calcs.yearsToFI) : 
                          (results.calcs.potentialYearsToFI !== null ? formatYears(results.calcs.potentialYearsToFI) : '�?(Rat Race)')}
                       </div>
@@ -728,11 +728,11 @@ export default function App() {
                   <h3 className="text-[10px] font-semibold tracking-widest uppercase text-[var(--text-muted)] mb-4">Next 3 Money Moves</h3>
                   <div className="space-y-4">
                     {results.actionPlan.moves.map((move, idx) => (
-                      <div key={idx} className="flex gap-4 p-4 rounded-xl bg-[#1A1C21] border border-[var(--border)]">
-                        <div className="w-7 h-7 rounded-full bg-[var(--border)] text-[var(--text-primary)] text-sm font-bold flex items-center justify-center shrink-0">
+                      <div key={idx} className="flex gap-4 p-4 rounded-xl bg-transparent border border-[var(--border)]">
+                        <div className="w-7 h-7 rounded-full bg-[var(--border)] text-white text-sm font-bold flex items-center justify-center shrink-0">
                           {idx + 1}
                         </div>
-                        <div className="text-[var(--text-primary)] text-base leading-tight self-center">
+                        <div className="text-white text-base leading-tight self-center">
                           {move}
                         </div>
                       </div>
@@ -743,7 +743,7 @@ export default function App() {
 
               {/* Scenario Simulator */}
               <div className="space-y-4">
-                 <h3 className="text-lg font-serif text-[var(--text-primary)]">Scenario Simulator</h3>
+                 <h3 className="text-lg font-bold tracking-tight text-white">Scenario Simulator</h3>
                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                    {(() => {
                      const getScenarioContent = (type: ScenarioType) => {
@@ -797,7 +797,7 @@ export default function App() {
 
                        return (
                          <div className="mt-3 pt-3 border-t border-[var(--accent)]/30 text-xs">
-                           <div className="text-[var(--text-primary)] font-medium">New FIRE date: {curText}</div>
+                           <div className="text-white font-medium">New FIRE date: {curText}</div>
                            {changeText !== "-" && changeText !== "No change" && <div className="text-[var(--accent)] mt-0.5">Change: {changeText}</div>}
                            {impactText && <div className="text-orange-300 font-medium leading-relaxed mt-2 p-2 bg-orange-900/20 rounded-md border border-orange-900/30">{impactText}</div>}
                          </div>
@@ -847,17 +847,17 @@ export default function App() {
                   <Mail className="w-8 h-8" />
                 </div>
                 <div className="space-y-2">
-                  <h3 className="text-2xl font-serif text-[var(--text-primary)]">Want the full FIRE Roadmap?</h3>
+                  <h3 className="text-2xl font-bold tracking-tight text-white">Want the full FIRE Roadmap?</h3>
                   <p className="text-[var(--text-muted)] text-sm max-w-xl mx-auto leading-relaxed">
                     Your free snapshot shows where you are today. The paid roadmap preview adds a 12-month plan, editable scenarios, monthly check-ins, and a shareable summary.
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-xl mx-auto pt-2 text-left">
                     {['12-month action plan', 'Custom scenario amounts', 'Monthly progress tracking', 'PDF-ready roadmap summary'].map(item => (
-                      <div key={item} className="text-xs text-[var(--text-primary)] bg-[#1A1C21] border border-[var(--border)] rounded-lg px-3 py-2">{item}</div>
+                      <div key={item} className="text-xs text-white bg-transparent border border-[var(--border)] rounded-lg px-3 py-2">{item}</div>
                     ))}
                   </div>
                   <div className="pt-2">
-                    <p className="text-[var(--text-primary)] font-medium text-sm">
+                    <p className="text-white font-medium text-sm">
                       Early access price: $9 for your first full roadmap.
                     </p>
                     <p className="text-xs text-[var(--accent)] font-medium mt-1">
@@ -889,10 +889,10 @@ export default function App() {
                   </button>
                 </div>
                 
-                <div className="max-w-xl mx-auto mt-6 p-4 rounded-xl border border-[var(--border)] bg-[#1A1C21]/30 text-sm text-[var(--text-muted)] text-left flex gap-3 leading-relaxed">
+                <div className="max-w-xl mx-auto mt-6 p-4 rounded-xl border border-[var(--border)] bg-transparent text-sm text-[var(--text-muted)] text-left flex gap-3 leading-relaxed">
                   <span className="text-lg leading-none shrink-0">🛡️</span>
                   <p>
-                    <strong className="text-[var(--text-primary)] font-semibold">Beta Promise:</strong> This tool is in early beta. If you find a logic bug with your specific numbers, email me. I will manually fix your plan, refund your $9 completely, and you keep the roadmap.
+                    <strong className="text-white font-semibold">Beta Promise:</strong> This tool is in early beta. If you find a logic bug with your specific numbers, email me. I will manually fix your plan, refund your $9 completely, and you keep the roadmap.
                   </p>
                 </div>
 
@@ -909,7 +909,7 @@ export default function App() {
 
       {/* Footer */}
       <footer className="text-center px-6 py-6 sm:p-8 text-[10px] text-[var(--text-muted)] max-w-2xl mx-auto space-y-4">
-        <p><strong className="font-semibold text-[var(--text-primary)]">Disclaimer:</strong> This tool is for educational planning only, not financial advice. Smart input automatically extracts your numbers, confirmed snapshots are stored in this browser, and waitlist signup stores only contact details and intent.</p>
+        <p><strong className="font-semibold text-white">Disclaimer:</strong> This tool is for educational planning only, not financial advice. Smart input automatically extracts your numbers, confirmed snapshots are stored in this browser, and waitlist signup stores only contact details and intent.</p>
       </footer>
 
       {/* Email Modal */}
@@ -959,7 +959,7 @@ export default function App() {
                   className="space-y-6 pt-2"
                 >
                   <div className="space-y-1">
-                    <h3 className="text-2xl font-serif text-[var(--text-primary)]">
+                    <h3 className="text-2xl font-bold tracking-tight text-white">
                       {intentType === 'paid' ? 'You caught us early! 😅' : 'Almost there'}
                     </h3>
                     <p className="text-[var(--text-muted)] text-sm">
@@ -973,15 +973,15 @@ export default function App() {
                     {intentType !== 'paid' && (
                       <div>
                         <label className="block text-xs font-semibold uppercase tracking-widest text-[var(--text-muted)] mb-2">First Name (Optional)</label>
-                        <input name="firstName" type="text" placeholder="John" className="w-full p-3 bg-[#0D0E12] border border-[var(--border)] rounded-lg text-white outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)]" />
+                        <input name="firstName" type="text" placeholder="John" className="w-full p-3 bg-transparent border border-[var(--border)] rounded-lg text-white outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)]" />
                       </div>
                     )}
                     <div>
                       <label className="block text-xs font-semibold uppercase tracking-widest text-[var(--text-muted)] mb-2">Email</label>
-                      <input name="email" type="email" required placeholder="john@example.com" className="ph-no-capture w-full p-3 bg-[#0D0E12] border border-[var(--border)] rounded-lg text-white outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)]" />
+                      <input name="email" type="email" required placeholder="john@example.com" className="ph-no-capture w-full p-3 bg-transparent border border-[var(--border)] rounded-lg text-white outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)]" />
                     </div>
                     <label className="flex items-start gap-3 text-xs text-[var(--text-muted)] leading-snug cursor-pointer mt-2">
-                      <input type="checkbox" required className="mt-0.5 rounded text-[var(--accent)] focus:ring-[var(--accent)] bg-[#0D0E12] border-[var(--border)]" />
+                      <input type="checkbox" required className="mt-0.5 rounded text-[var(--accent)] focus:ring-[var(--accent)] bg-transparent border-[var(--border)]" />
                       <span>I agree to receive occasional FIRE tips and product updates.</span>
                     </label>
                   </div>
@@ -1003,7 +1003,7 @@ export default function App() {
                   <div className="w-16 h-16 bg-[var(--accent)]/10 text-[var(--accent)] rounded-full flex items-center justify-center mx-auto mb-6">
                     <ShieldCheck className="w-8 h-8" />
                   </div>
-                  <h3 className="text-xl font-serif text-[var(--text-primary)]">Thank you! You're on the list.</h3>
+                  <h3 className="text-xl font-bold tracking-tight text-white">Thank you! You're on the list.</h3>
                   <p className="text-[var(--text-muted)] text-sm">
                     {intentType === 'paid' 
                       ? 'Thanks for joining! We will notify you as soon as the full FIRE roadmap is available.'
