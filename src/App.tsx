@@ -627,7 +627,7 @@ export default function App() {
               className="space-y-8"
             >
               <div className="flex items-center justify-between">
-                <h2 className="text-3xl font-bold tracking-tight text-white">Your Freedom Plan</h2>
+                <h2 className="text-3xl font-bold tracking-tight text-white">Your FIRE Path</h2>
                 <button 
                   onClick={() => setResults(null)} 
                   className="w-10 h-10 flex items-center justify-center rounded-full bg-[var(--accent)]/10 text-[var(--accent)] hover:bg-[var(--accent)]/20 transition-colors"
@@ -646,7 +646,7 @@ export default function App() {
                   <div className="space-y-4">
                     <div className="space-y-1">
                       <div className="text-[var(--text-muted)] text-[10px] uppercase tracking-widest font-semibold">
-                        {(results.calcs.yearsToFI === null || results.calcs.yearsToFI >= 100) && results.calcs.potentialYearsToFI !== null ? 'Potential Years to Freedom' : 'Years to Freedom'}
+                        {(results.calcs.yearsToFI === null || results.calcs.yearsToFI >= 100) && results.calcs.potentialYearsToFI !== null ? 'Potential Timeline' : 'Time to Freedom'}
                       </div>
                       <div className="text-4xl sm:text-5xl font-bold tracking-tight text-white">
                         {results.calcs.yearsToFI !== null && results.calcs.yearsToFI < 100 ? formatYears(results.calcs.yearsToFI) : 
@@ -657,25 +657,25 @@ export default function App() {
                     <p className="text-sm text-[var(--text-muted)] max-w-xl leading-relaxed">
                       {results.calcs.yearsToFI !== null && results.calcs.yearsToFI < 100 ? (
                         <>
-                          Your estimated FIRE number is <strong className="text-white font-medium">{formatCurrency(results.calcs.fiNumber)}</strong>. At your current pace, you will buy back your freedom in about <strong className="text-[var(--accent)] font-medium">{formatYears(results.calcs.yearsToFI)}</strong>.
+                          Your estimated freedom number is <strong className="text-white font-medium">{formatCurrency(results.calcs.fiNumber)}</strong>. At your current investing pace, you are about <strong className="text-[var(--accent)] font-medium">{formatYears(results.calcs.yearsToFI)}</strong> away from work-optional life.
                           {(snapshot.investedAssets === 0 || snapshot.investedAssets === null) && results.calcs.effectiveMonthlyInvesting > 0 && (
-                            <span className="block mt-2">You're starting from $0 invested assets, but your monthly investing power is strong. Consistency is your best asset now.</span>
+                            <span className="block mt-2">You are starting from zero invested assets, but your monthly investing capacity is meaningful. Consistency matters more than perfection here.</span>
                           )}
                         </>
                       ) : results.calcs.potentialYearsToFI !== null ? (
                         <>
-                          <strong className="text-orange-400 font-medium text-base">You are Rich in Cash, Poor in Strategy.</strong>
+                          <strong className="text-orange-400 font-medium text-base">You have capital, but it is not working hard enough yet.</strong>
                           <span className="block mt-2">
-                            You have enough capital to potentially reach FIRE in <strong className="text-[var(--accent)]">{formatYears(results.calcs.potentialYearsToFI)}</strong> if you start deploying your cash today. Stop letting inflation eat your savings!
+                            If you start deploying that cash with intention, you could potentially reach FIRE in <strong className="text-[var(--accent)]">{formatYears(results.calcs.potentialYearsToFI)}</strong>. The gap is no longer earning. It is execution.
                           </span>
                         </>
                       ) : (
                         <>
-                          <strong className="text-orange-400 font-medium text-base">Currently, you are stuck in the Rat Race forever.</strong>
+                          <strong className="text-orange-400 font-medium text-base">Right now, your current setup does not buy freedom on a realistic timeline.</strong>
                           <span className="block mt-2">
                             {snapshot.monthlyIncome && snapshot.monthlyExpenses && (snapshot.monthlyIncome - snapshot.monthlyExpenses > 0) ? 
-                              `But wait... you have a surplus of ${formatCurrency(snapshot.monthlyIncome - snapshot.monthlyExpenses)} every month! You just need to deploy it into assets instead of letting it sit idle.` : 
-                              `You are spending exactly what you earn (or more). To buy back your freedom, you must create a gap between your income and expenses.`
+                              `The good news: you still have a monthly surplus of ${formatCurrency(snapshot.monthlyIncome - snapshot.monthlyExpenses)}. The unlock is turning that cashflow into invested assets instead of letting it drift.` : 
+                              `You are spending everything you make, or more. The first unlock is creating room between income and expenses.`
                             }
                           </span>
                         </>
@@ -705,7 +705,7 @@ export default function App() {
                     return (
                       <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 pt-6 border-t border-[var(--border)]">
                         <div>
-                          <h4 className="text-[10px] tracking-widest uppercase text-[var(--text-muted)] font-semibold mb-1">Current Stage</h4>
+                          <h4 className="text-[10px] tracking-widest uppercase text-[var(--text-muted)] font-semibold mb-1">Current Position</h4>
                           <p className="text-sm font-medium text-white">{stage}</p>
                         </div>
                         <div>
@@ -725,7 +725,7 @@ export default function App() {
                   percentage={Math.min(results.calcs.fireProgress * 100, 100)}
                   value={(results.calcs.fireProgress * 100).toFixed(1)}
                   unit="%"
-                  description={results.calcs.fireProgress <= 0.0001 ? "You're at the starting line. Your monthly investing rate is what matters most now." : "Invested assets / FIRE number"}
+                  description={results.calcs.fireProgress <= 0.0001 ? "You are at the starting line. Your investing rate matters most right now." : "Invested assets relative to your freedom number"}
                   color="text-[var(--accent)]"
                 />
                 <ProgressCard
@@ -733,7 +733,7 @@ export default function App() {
                   percentage={Math.min(results.calcs.cashflowFreedom * 100, 100)}
                   value={(results.calcs.cashflowFreedom * 100).toFixed(1)}
                   unit="%"
-                  description="Passive income / monthly expenses"
+                  description="Passive income relative to monthly expenses"
                   color="text-sky-500"
                   note={results.calcs.cashflowFreedom === 0 ? "0% covered by passive income. This is normal early on." : null}
                 />
@@ -742,7 +742,7 @@ export default function App() {
                   percentage={Math.min((results.calcs.runwayMonths / 6) * 100, 100)} // normalize relative to 6 months
                   value={results.calcs.runwayMonths.toFixed(1)}
                   unit="months"
-                  description="Months your liquid savings can cover expenses"
+                  description="Months your cash reserves can cover expenses"
                   color="text-orange-500"
                 />
               </div>
@@ -752,7 +752,7 @@ export default function App() {
               {/* Action Plan */}
               <div className="glass p-8 space-y-8">
                 <div>
-                  <h3 className="text-[10px] font-semibold tracking-widest uppercase text-[var(--text-muted)] mb-3">Biggest Blocker</h3>
+                  <h3 className="text-[10px] font-semibold tracking-widest uppercase text-[var(--text-muted)] mb-3">Primary Constraint</h3>
                   <div className="bg-orange-900/10 px-4 py-3 rounded-xl border border-orange-900/50 flex items-start gap-3">
                     <Zap className="w-5 h-5 mt-0.5 shrink-0 text-orange-400" />
                     <div>
@@ -766,7 +766,7 @@ export default function App() {
                 </div>
 
                 <div>
-                  <h3 className="text-[10px] font-semibold tracking-widest uppercase text-[var(--text-muted)] mb-4">Next 3 Money Moves</h3>
+                  <h3 className="text-[10px] font-semibold tracking-widest uppercase text-[var(--text-muted)] mb-4">Best Next Moves</h3>
                   <div className="space-y-4">
                     {results.actionPlan.moves.map((move, idx) => (
                       <div key={idx} className="flex gap-4 p-4 rounded-xl bg-transparent border border-[var(--border)]">
@@ -784,7 +784,7 @@ export default function App() {
 
               {/* Scenario Simulator */}
               <div className="space-y-4">
-                 <h3 className="text-lg font-bold tracking-tight text-white">Scenario Simulator</h3>
+                 <h3 className="text-lg font-bold tracking-tight text-white">What Changes The Timeline?</h3>
                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                    {(() => {
                      const getScenarioContent = (type: ScenarioType) => {
@@ -839,7 +839,7 @@ export default function App() {
 
                        return (
                          <div className="mt-3 pt-3 border-t border-[var(--accent)]/30 text-xs">
-                           <div className="text-white font-medium">New FIRE date: {curText}</div>
+                           <div className="text-white font-medium">Updated timeline: {curText}</div>
                            {changeText !== "-" && changeText !== "No change" && <div className="text-[var(--accent)] mt-0.5">Change: {changeText}</div>}
                            {impactText && <div className="text-orange-300 font-medium leading-relaxed mt-2 p-2 bg-orange-900/20 rounded-md border border-orange-900/30">{impactText}</div>}
                          </div>
@@ -849,7 +849,7 @@ export default function App() {
                        <>
                          <ScenarioCard 
                            label={`Invest ${formatCurrency(scenarioAdjustments.invest, snapshot.currency)} more/mo`}
-                           sub="Adds directly to your monthly investing pace"
+                          sub="Adds directly to your monthly investing amount"
                            amountLabel="Extra investing"
                            amount={scenarioAdjustments.invest}
                            onAmountChange={(value: number) => setScenarioAdjustments(prev => ({ ...prev, invest: value }))}
@@ -859,7 +859,7 @@ export default function App() {
                          />
                          <ScenarioCard 
                            label={`Spend ${formatCurrency(scenarioAdjustments.spend, snapshot.currency)} less/mo`}
-                          sub="Cuts spending and redirects the savings into monthly investing"
+                          sub="Cuts lifestyle burn and redirects the difference into investing"
                            amountLabel="Monthly reduction"
                            amount={scenarioAdjustments.spend}
                            onAmountChange={(value: number) => setScenarioAdjustments(prev => ({ ...prev, spend: value }))}
@@ -869,7 +869,7 @@ export default function App() {
                          />
                          <ScenarioCard 
                            label={`Earn ${formatCurrency(scenarioAdjustments.earn, snapshot.currency)} more/mo`}
-                          sub="Assumes the added income is invested every month"
+                          sub="Assumes the added income is invested automatically each month"
                            amountLabel="Added income"
                            amount={scenarioAdjustments.earn}
                            onAmountChange={(value: number) => setScenarioAdjustments(prev => ({ ...prev, earn: value }))}
@@ -889,9 +889,9 @@ export default function App() {
                   <Mail className="w-8 h-8" />
                 </div>
                 <div className="space-y-2">
-                  <h3 className="text-2xl font-bold tracking-tight text-white">Want the full FIRE Roadmap?</h3>
+                  <h3 className="text-2xl font-bold tracking-tight text-white">Want the full roadmap?</h3>
                   <p className="text-[var(--text-muted)] text-sm max-w-xl mx-auto leading-relaxed">
-                    Your free snapshot shows where you are today. The paid roadmap preview adds a 12-month plan, editable scenarios, monthly check-ins, and a shareable summary.
+                    Your free snapshot shows where you stand today. The full roadmap turns that into a practical 12-month plan with editable scenarios, monthly checkpoints, and a clean summary you can revisit.
                   </p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-w-xl mx-auto pt-2 text-left">
                     {['12-month action plan', 'Custom scenario amounts', 'Monthly progress tracking', 'PDF-ready roadmap summary'].map(item => (
@@ -912,7 +912,7 @@ export default function App() {
                     console.log('Tracking Event: free_beta_clicked');
                     openEmailModal('free');
                   }} className="bg-white/10 hover:bg-white/20 text-white font-semibold px-8 py-3 rounded-lg border border-white/10 transition-colors text-sm w-full sm:w-auto text-center">
-                    Join Free Newsletter
+                    Get Free Updates
                   </button>
                   <button 
                     onClick={() => {
@@ -927,19 +927,19 @@ export default function App() {
                     data-tally-emoji-animation="wave"
                     className="bg-[var(--accent)] hover:bg-emerald-400 text-black font-semibold px-8 py-3 rounded-lg transition-colors text-sm w-full sm:w-auto text-center"
                   >
-                    Preview Full Roadmap - $9
+                    Preview The Full Roadmap - $9
                   </button>
                 </div>
                 
                 <div className="max-w-xl mx-auto mt-6 p-4 rounded-xl border border-[var(--border)] bg-transparent text-sm text-[var(--text-muted)] text-left flex gap-3 leading-relaxed">
                   <span className="text-lg leading-none shrink-0">🛡️</span>
                   <p>
-                    <strong className="text-white font-semibold">Beta Promise:</strong> This tool is in early beta. If you find a logic bug with your specific numbers, email me. I will manually fix your plan, refund your $9 completely, and you keep the roadmap.
+                    <strong className="text-white font-semibold">Beta Promise:</strong> This is an early product. If you spot a real logic bug in your numbers, email me. I will review it manually, refund your $9 in full, and you still keep the roadmap.
                   </p>
                 </div>
 
                 <p className="text-[11px] text-[var(--text-muted)] mt-4">
-                  Signup stores your email, first name, and selected intent. We do not store your full financial snapshot with the waitlist.
+                  Signup stores your email, first name, and selected intent. Your full financial snapshot is not attached to the waitlist flow.
                 </p>
               </div>
 
