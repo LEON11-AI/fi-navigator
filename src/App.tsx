@@ -436,14 +436,13 @@ export default function App() {
                 
                 {snapshot.monthlyIncome !== null && snapshot.monthlyExpenses !== null ? (
                   <SnapshotField 
-                    label="Monthly Investing" 
+                    label={snapshot.monthlyInvesting !== null ? "Monthly Investing" : "Monthly Surplus"} 
                     val={snapshot.monthlyInvesting}
                     displayVal={snapshot.monthlyInvesting !== null ? snapshot.monthlyInvesting : getDerivedMonthlyInvesting(snapshot)}
                     fieldKey="monthlyInvesting" 
-                     
                     setSnapshot={setSnapshot} 
-                    microcopy="Money you plan to put into assets every month."
-                    hint={snapshot.monthlyInvesting === null ? "Calculated from income minus expenses. Edit to override." : undefined}
+                    microcopy={snapshot.monthlyInvesting !== null ? "Money you plan to put into assets every month." : "Your monthly gap between income and expenses. If you are not investing all of it, edit this field to set the amount you actually invest."}
+                    hint={snapshot.monthlyInvesting === null ? "Calculated from income minus expenses. This is surplus, not an assumed investing amount. Edit to set your real monthly investing." : undefined}
                   />
                 ) : null}
 
