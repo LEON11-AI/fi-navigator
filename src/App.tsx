@@ -33,6 +33,12 @@ const defaultScenarioAdjustments: Record<ScenarioType, number> = {
 
 const hasValue = (value: unknown) => value !== null && value !== undefined && value !== '';
 
+const getDerivedMonthlyInvesting = (snapshot: FinancialSnapshot) => {
+  const income = snapshot.monthlyIncome ?? 0;
+  const expenses = snapshot.monthlyExpenses ?? 0;
+  return Math.max(income - expenses, 0);
+};
+
 const getCriticalMissingFields = (snapshot: FinancialSnapshot) => {
   const missing = [];
   if (snapshot.monthlyExpenses === null || Number.isNaN(Number(snapshot.monthlyExpenses))) missing.push('monthlyExpenses');
@@ -154,6 +160,8 @@ export default function App() {
       if (!data.expectedAnnualRealReturn) delete data.expectedAnnualRealReturn;
       if (!data.safeWithdrawalRate) delete data.safeWithdrawalRate;
       if (!data.targetMonthlySpending) delete data.targetMonthlySpending;
+      // Treat omitted investing as null so the UI can derive it consistently from surplus.
+      if (!hasValue(data.monthlyInvesting) || Number(data.monthlyInvesting) <= 0) delete data.monthlyInvesting;
 
       // Merge with defaults
       const newSnapshot: FinancialSnapshot = {
@@ -412,10 +420,11 @@ export default function App() {
                   microcopy="Rent, groceries, bills, and fun money."
                 />
                 
-                {snapshot.monthlyIncome && snapshot.monthlyExpenses ? (
+                {snapshot.monthlyIncome !== null && snapshot.monthlyExpenses !== null ? (
                   <SnapshotField 
                     label="Monthly Investing" 
-                    val={snapshot.monthlyInvesting !== null ? snapshot.monthlyInvesting : (snapshot.monthlyIncome - snapshot.monthlyExpenses > 0 ? snapshot.monthlyIncome - snapshot.monthlyExpenses : 0)} 
+                    val={snapshot.monthlyInvesting}
+                    displayVal={snapshot.monthlyInvesting !== null ? snapshot.monthlyInvesting : getDerivedMonthlyInvesting(snapshot)}
                     fieldKey="monthlyInvesting" 
                      
                     setSnapshot={setSnapshot} 
@@ -1118,7 +1127,7 @@ function HighInterestDebtField({ snapshot, setSnapshot }: any) {
   );
 }
 
-function SnapshotField({ label, val, fieldKey, setSnapshot, isMissing = false, hint, microcopy, pitfall }: any) {
+function SnapshotField({ label, val, displayVal, fieldKey, setSnapshot, isMissing = false, hint, microcopy, pitfall }: any) {
   const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -1177,7 +1186,7 @@ function SnapshotField({ label, val, fieldKey, setSnapshot, isMissing = false, h
         </div>
       ) : (
         <div className="text-xl font-semibold text-[var(--text-primary)] mt-1">
-           {isMissing ? <span className="text-orange-400 text-base font-normal flex items-center gap-1.5"><Zap className="w-4 h-4" /> Needed</span> : formatCurrency(val)}
+           {isMissing ? <span className="text-orange-400 text-base font-normal flex items-center gap-1.5"><Zap className="w-4 h-4" /> Needed</span> : formatCurrency(displayVal ?? val)}
         </div>
       )}
 
