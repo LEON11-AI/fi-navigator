@@ -48,6 +48,23 @@ const scrollViewportToTop = () => {
   document.documentElement.scrollTop = 0;
   document.body.scrollTop = 0;
 };
+const DEBUG_RUN_ID = 'post-fix';
+// #region debug-point A:reporter
+const reportDebugEvent = (hypothesisId: string, location: string, msg: string, data: Record<string, unknown> = {}) =>
+  fetch('http://127.0.0.1:7777/event', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      sessionId: 'mobile-white-flash',
+      runId: DEBUG_RUN_ID,
+      hypothesisId,
+      location,
+      msg: `[DEBUG] ${msg}`,
+      data,
+      ts: Date.now()
+    })
+  }).catch(() => {});
+// #endregion
 
 const getCriticalMissingFields = (snapshot: FinancialSnapshot) => {
   const missing = [];
@@ -132,6 +149,26 @@ export default function App() {
       localStorage.setItem(SNAPSHOT_STORAGE_KEY, JSON.stringify(snapshot));
     }
   }, [snapshot]);
+
+  useEffect(() => {
+    if (!snapshot && !results) return;
+    const centerEl = document.elementFromPoint(window.innerWidth / 2, Math.max(1, window.innerHeight / 2));
+    // #region debug-point C:screen-state
+    reportDebugEvent('C', 'App.tsx:screen-state', 'screen state changed', {
+      hasSnapshot: !!snapshot,
+      hasResults: !!results,
+      scrollY: window.scrollY,
+      viewportHeight: window.innerHeight,
+      bodyBg: window.getComputedStyle(document.body).backgroundColor,
+      rootBg: window.getComputedStyle(document.getElementById('root') || document.body).backgroundColor,
+      bodyHeight: document.body.scrollHeight,
+      rootHeight: (document.getElementById('root') as HTMLElement | null)?.offsetHeight ?? null,
+      centerTag: centerEl?.tagName ?? null,
+      centerClass: centerEl instanceof HTMLElement ? centerEl.className : null,
+      heading: document.querySelector('h2, h3')?.textContent ?? null
+    });
+    // #endregion
+  }, [snapshot, results]);
 
   const startManualEntry = () => {
     const manualSnapshot = { ...defaultSnapshot };
@@ -227,14 +264,44 @@ export default function App() {
       return;
     }
 
+    const clickCenterEl = document.elementFromPoint(window.innerWidth / 2, Math.max(1, window.innerHeight / 2));
+    // #region debug-point B:before-calculate
+    reportDebugEvent('B', 'App.tsx:handleCalculate', 'calculate clicked', {
+      scrollY: window.scrollY,
+      viewportHeight: window.innerHeight,
+      viewportWidth: window.innerWidth,
+      bodyHeight: document.body.scrollHeight,
+      rootHeight: (document.getElementById('root') as HTMLElement | null)?.offsetHeight ?? null,
+      snapshotIncome: snapshot.monthlyIncome,
+      snapshotExpenses: snapshot.monthlyExpenses,
+      snapshotInvesting: snapshot.monthlyInvesting,
+      centerTag: clickCenterEl?.tagName ?? null,
+      centerClass: clickCenterEl instanceof HTMLElement ? clickCenterEl.className : null
+    });
+    // #endregion
+
     const calcs = calculateFIRE(snapshot);
     const actionPlan = getInsights(snapshot, calcs);
-    
+    scrollViewportToTop();
     setResults({ calcs, actionPlan });
     setBaselineResults({ calcs, actionPlan });
     setActiveScenario(null);
     setMissingFields([]);
-    requestAnimationFrame(() => scrollViewportToTop());
+
+    requestAnimationFrame(() => {
+      const rafCenterEl = document.elementFromPoint(window.innerWidth / 2, Math.max(1, window.innerHeight / 2));
+      // #region debug-point D:after-calculate-raf
+      reportDebugEvent('D', 'App.tsx:handleCalculate:raf', 'post-calculate animation frame', {
+        scrollY: window.scrollY,
+        viewportHeight: window.innerHeight,
+        bodyHeight: document.body.scrollHeight,
+        rootHeight: (document.getElementById('root') as HTMLElement | null)?.offsetHeight ?? null,
+        centerTag: rafCenterEl?.tagName ?? null,
+        centerClass: rafCenterEl instanceof HTMLElement ? rafCenterEl.className : null,
+        heading: document.querySelector('h2, h3')?.textContent ?? null
+      });
+      // #endregion
+    });
     
     // Trigger confetti if good progress
     if (calcs.fireProgress > 0) {
@@ -419,10 +486,11 @@ export default function App() {
           </div>
         )}
 
-        {/* SNAPSHOT EDIT & CONFIRM */}
-        <AnimatePresence mode="popLayout">
-          {snapshot && !results && (
+        {/* SNAPSHOT / RESULTS FLOW */}
+        <AnimatePresence mode="wait" initial={false}>
+          {snapshot && !results ? (
             <motion.section
+              key="snapshot-screen"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95 }}
@@ -615,15 +683,12 @@ export default function App() {
                 );
               })()}
             </motion.section>
-          )}
-        </AnimatePresence>
-
-        {/* RESULTS DASHBOARD */}
-        <AnimatePresence>
-          {results && snapshot && (
+          ) : results && snapshot ? (
             <motion.section
+              key="results-screen"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.98 }}
               className="space-y-8"
             >
               <div className="flex items-center justify-between">
@@ -944,7 +1009,7 @@ export default function App() {
               </div>
 
             </motion.section>
-          )}
+          ) : null}
         </AnimatePresence>
 
       </main>
