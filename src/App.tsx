@@ -97,6 +97,7 @@ const formatYears = (years: number | null) => {
 };
 
 export default function App() {
+  const isMobileViewport = typeof window !== 'undefined' && window.innerWidth < 640;
   const [inputText, setInputText] = useState('');
   const [isParsing, setIsParsing] = useState(false);
   const [parseError, setParseError] = useState<string | null>(null);
@@ -304,7 +305,7 @@ export default function App() {
     });
     
     // Trigger confetti if good progress
-    if (calcs.fireProgress > 0) {
+    if (calcs.fireProgress > 0 && !isMobileViewport) {
       setTimeout(() => {
         confetti({
            particleCount: 100,
@@ -491,9 +492,10 @@ export default function App() {
           {snapshot && !results ? (
             <motion.section
               key="snapshot-screen"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95 }}
+              initial={isMobileViewport ? false : { opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={isMobileViewport ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, scale: 0.95 }}
+              transition={isMobileViewport ? { duration: 0 } : { duration: 0.18, ease: 'easeOut' }}
               className="glass p-6 sm:p-8 space-y-8"
             >
               <div className="border-b border-[var(--border)] pb-4">
@@ -686,9 +688,10 @@ export default function App() {
           ) : results && snapshot ? (
             <motion.section
               key="results-screen"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.98 }}
+              initial={isMobileViewport ? false : { opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={isMobileViewport ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, scale: 0.98 }}
+              transition={isMobileViewport ? { duration: 0 } : { duration: 0.2, ease: 'easeOut' }}
               className="space-y-8"
             >
               <div className="flex items-center justify-between">
