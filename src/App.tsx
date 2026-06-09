@@ -43,6 +43,11 @@ const targetSpendingCuePattern = /\b(target spending|fi spending|retirement spen
 const hasExplicitSafeWithdrawalRate = (text: string) => safeWithdrawalCuePattern.test(text);
 const hasExplicitExpectedReturn = (text: string) => returnCuePattern.test(text);
 const hasExplicitTargetSpending = (text: string) => targetSpendingCuePattern.test(text);
+const scrollViewportToTop = () => {
+  window.scrollTo({ top: 0, behavior: 'auto' });
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+};
 
 const getCriticalMissingFields = (snapshot: FinancialSnapshot) => {
   const missing = [];
@@ -229,6 +234,7 @@ export default function App() {
     setBaselineResults({ calcs, actionPlan });
     setActiveScenario(null);
     setMissingFields([]);
+    requestAnimationFrame(() => scrollViewportToTop());
     
     // Trigger confetti if good progress
     if (calcs.fireProgress > 0) {

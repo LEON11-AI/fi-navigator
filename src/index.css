@@ -13,11 +13,21 @@
   --accent: #00FF66;
   --text-muted: #A1A1AA;
   --text-primary: #FFFFFF;
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  background-color: var(--bg);
 }
 
 body {
+  min-height: 100vh;
   background-color: var(--bg);
   color: var(--text-primary);
+  overscroll-behavior-y: none;
 }
 
 .glass {
