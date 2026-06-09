@@ -56,8 +56,8 @@ const formatCurrency = (val: number | null, _currency = 'USD') => {
 };
 
 const formatYears = (years: number | null) => {
-  if (years === null) return '�?(Rat Race)';
-  if (years >= 100) return '�?(Rat Race)';
+  if (years === null) return '∞ (Rat Race)';
+  if (years >= 100) return '∞ (Rat Race)';
   if (years >= 80) return '80+ years';
   if (years === 0) return 'Already there';
   return `${years.toFixed(1)} years`;
@@ -609,7 +609,7 @@ export default function App() {
                       </div>
                       <div className="text-4xl sm:text-5xl font-bold tracking-tight text-white">
                         {results.calcs.yearsToFI !== null && results.calcs.yearsToFI < 100 ? formatYears(results.calcs.yearsToFI) : 
-                         (results.calcs.potentialYearsToFI !== null ? formatYears(results.calcs.potentialYearsToFI) : '�?(Rat Race)')}
+                         (results.calcs.potentialYearsToFI !== null ? formatYears(results.calcs.potentialYearsToFI) : '∞ (Rat Race)')}
                       </div>
                     </div>
                     
@@ -786,11 +786,11 @@ export default function App() {
                                    extra = `your FIRE target drops by ${formatCurrency(targetDrop)}, and `;
                                }
                                const actionWord = type === 'spend' ? 'cutting' : type === 'invest' ? 'investing' : 'earning';
-                               impactText = `�?By ${actionWord} just ${formatCurrency(amount)}/mo, ${extra}you shave ${diff.toFixed(1)} YEARS off your working life!`;
+                               impactText = `⚡ By ${actionWord} just ${formatCurrency(amount)}/mo, ${extra}you shave ${diff.toFixed(1)} YEARS off your working life!`;
                            }
                        } else if (baseline === null && current !== null) {
                            changeText = "Now on track to FIRE!";
-                           impactText = `�?This single move breaks you out of the Rat Race! You are now on track to FIRE in ${formatYears(current)}.`;
+                           impactText = `⚡ This single move breaks you out of the Rat Race! You are now on track to FIRE in ${formatYears(current)}.`;
                        } else {
                            changeText = "-";
                        }
@@ -1215,7 +1215,7 @@ function AssumptionImpact({ snapshot }: { snapshot: FinancialSnapshot }) {
   const getYearsStr = (calcs: any) => {
     if (calcs.yearsToFI !== null && calcs.yearsToFI < 100) return formatYears(calcs.yearsToFI);
     if (calcs.potentialYearsToFI !== null) return formatYears(calcs.potentialYearsToFI);
-    return '�?(Rat Race)';
+    return '∞ (Rat Race)';
   };
 
   const getEffectiveYears = (calcs: any) => {
