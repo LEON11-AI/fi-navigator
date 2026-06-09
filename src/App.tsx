@@ -30,6 +30,7 @@ const defaultScenarioAdjustments: Record<ScenarioType, number> = {
   spend: 300,
   earn: 1000
 };
+const SNAPSHOT_STORAGE_KEY = 'fire_mvp_snapshot_v2';
 
 const hasValue = (value: unknown) => value !== null && value !== undefined && value !== '';
 const monthlyInvestingCuePattern = /\b(invest|investing|contribute|contributing|contribution|save|saving|set aside|put aside|deposit|dca)\b|定投|每月投|每月存|储蓄/i;
@@ -94,7 +95,8 @@ export default function App() {
 
   // Load from local storage
   useEffect(() => {
-    const saved = localStorage.getItem('fire_mvp_snapshot');
+    localStorage.removeItem('fire_mvp_snapshot');
+    const saved = localStorage.getItem(SNAPSHOT_STORAGE_KEY);
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -122,7 +124,7 @@ export default function App() {
 
   useEffect(() => {
     if (snapshot) {
-      localStorage.setItem('fire_mvp_snapshot', JSON.stringify(snapshot));
+      localStorage.setItem(SNAPSHOT_STORAGE_KEY, JSON.stringify(snapshot));
     }
   }, [snapshot]);
 
@@ -132,7 +134,7 @@ export default function App() {
     setMissingFields(['monthlyIncome', 'monthlyExpenses', 'investedAssets']);
     setParseError(null);
     setResults(null);
-    localStorage.setItem('fire_mvp_snapshot', JSON.stringify(manualSnapshot));
+    localStorage.setItem(SNAPSHOT_STORAGE_KEY, JSON.stringify(manualSnapshot));
   };
 
   const openEmailModal = (intent: 'free' | 'paid') => {
@@ -198,7 +200,7 @@ export default function App() {
       };
 
       setSnapshot(newSnapshot);
-      localStorage.setItem('fire_mvp_snapshot', JSON.stringify(newSnapshot));
+      localStorage.setItem(SNAPSHOT_STORAGE_KEY, JSON.stringify(newSnapshot));
       setMissingFields(data.missingFields || []);
       
     } catch (err) {
@@ -258,7 +260,7 @@ export default function App() {
         <div className="flex items-center gap-4">
           {(snapshot || results) && (
             <button 
-              onClick={() => { setSnapshot(null); setResults(null); setBaselineResults(null); setInputText(''); setParseError(null); setMissingFields([]); localStorage.removeItem('fire_mvp_snapshot'); }}
+              onClick={() => { setSnapshot(null); setResults(null); setBaselineResults(null); setInputText(''); setParseError(null); setMissingFields([]); localStorage.removeItem('fire_mvp_snapshot'); localStorage.removeItem(SNAPSHOT_STORAGE_KEY); }}
               className="text-xs font-semibold text-[var(--text-muted)] hover:text-white transition-colors"
             >
               Start Over
@@ -790,14 +792,10 @@ export default function App() {
                          newSnapshot.monthlyInvesting = baselineInvesting + amount;
                        } else if (type === 'spend') {
                          newSnapshot.monthlyExpenses = Math.max(0, (snapshot.monthlyExpenses || 0) - amount);
-                         if (snapshot.monthlyInvesting !== null) {
-                           newSnapshot.monthlyInvesting = baselineInvesting + amount;
-                         }
+                        newSnapshot.monthlyInvesting = baselineInvesting + amount;
                        } else if (type === 'earn') {
                          newSnapshot.monthlyIncome = (snapshot.monthlyIncome || 0) + amount;
-                         if (snapshot.monthlyInvesting !== null) {
-                           newSnapshot.monthlyInvesting = baselineInvesting + amount;
-                         }
+                        newSnapshot.monthlyInvesting = baselineInvesting + amount;
                        }
                        
                        const calcs = calculateFIRE(newSnapshot);
@@ -818,8 +816,13 @@ export default function App() {
                                    const targetDrop = baselineResults.calcs.fiNumber - calcs.fiNumber;
                                    extra = `your FIRE target drops by ${formatCurrency(targetDrop)}, and `;
                                }
-                               const actionWord = type === 'spend' ? 'cutting' : type === 'invest' ? 'investing' : 'earning';
-                               impactText = `⚡ By ${actionWord} just ${formatCurrency(amount)}/mo, ${extra}you shave ${diff.toFixed(1)} YEARS off your working life!`;
+                              const actionText =
+                                type === 'spend'
+                                  ? `cutting just ${formatCurrency(amount)}/mo and investing the difference`
+                                  : type === 'earn'
+                                    ? `earning just ${formatCurrency(amount)}/mo and investing it`
+                                    : `investing just ${formatCurrency(amount)}/mo`;
+                              impactText = `⚡ By ${actionText}, ${extra}you shave ${diff.toFixed(1)} YEARS off your working life!`;
                            }
                        } else if (baseline === null && current !== null) {
                            changeText = "Now on track to FIRE!";
@@ -850,7 +853,7 @@ export default function App() {
                          />
                          <ScenarioCard 
                            label={`Spend ${formatCurrency(scenarioAdjustments.spend, snapshot.currency)} less/mo`}
-                           sub="Lowers your FIRE number and can increase monthly surplus"
+                          sub="Cuts spending and redirects the savings into monthly investing"
                            amountLabel="Monthly reduction"
                            amount={scenarioAdjustments.spend}
                            onAmountChange={(value: number) => setScenarioAdjustments(prev => ({ ...prev, spend: value }))}
@@ -860,7 +863,7 @@ export default function App() {
                          />
                          <ScenarioCard 
                            label={`Earn ${formatCurrency(scenarioAdjustments.earn, snapshot.currency)} more/mo`}
-                           sub="Assumes the added income becomes investable surplus"
+                          sub="Assumes the added income is invested every month"
                            amountLabel="Added income"
                            amount={scenarioAdjustments.earn}
                            onAmountChange={(value: number) => setScenarioAdjustments(prev => ({ ...prev, earn: value }))}
@@ -1372,14 +1375,14 @@ function ProgressCard({ title, percentage, value, unit, description, color, note
 
 function ScenarioCard({ label, sub, amountLabel, amount, isActive, activeContent, onClick, onAmountChange }: any) {
   return (
-    <div className={cn("p-4 rounded-xl border text-left transition-all duration-300 ease-in-out", isActive ? "border-[var(--accent)] bg-[var(--accent)]/10 ring-1 ring-[var(--accent)]/50" : "border-[var(--border)] bg-transparent hover:border-[var(--accent)]/60 hover:bg-[var(--accent)]/5 hover:-translate-y-1 hover:shadow-lg")}>
+    <div className={cn("p-4 sm:p-5 rounded-xl border text-left transition-all duration-300 ease-in-out", isActive ? "border-[var(--accent)] bg-[var(--accent)]/10 ring-1 ring-[var(--accent)]/50" : "border-[var(--border)] bg-transparent hover:border-[var(--accent)]/60 hover:bg-[var(--accent)]/5 hover:-translate-y-1 hover:shadow-lg")}>
       <button type="button" onClick={onClick} className="w-full text-left cursor-pointer">
-        <div className="font-semibold text-sm text-[var(--text-primary)] mb-0.5">{label}</div>
-        <div className="text-xs text-[var(--text-muted)]">{sub}</div>
+        <div className="font-semibold text-base sm:text-sm text-[var(--text-primary)] mb-1 leading-snug">{label}</div>
+        <div className="text-sm sm:text-xs text-[var(--text-muted)] leading-snug">{sub}</div>
       </button>
-      <label className="mt-3 flex items-center justify-between gap-3 text-xs text-[var(--text-muted)]">
+      <label className="mt-4 flex flex-col items-stretch gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3 text-sm sm:text-xs text-[var(--text-muted)]">
         <span>{amountLabel}</span>
-        <div className="relative w-28">
+        <div className="relative w-full sm:w-28">
           <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[var(--text-muted)]">$</span>
           <input
             type="number"
@@ -1388,7 +1391,7 @@ function ScenarioCard({ label, sub, amountLabel, amount, isActive, activeContent
             value={amount === 0 ? '' : amount}
             placeholder="0"
             onChange={e => onAmountChange(e.target.value === '' ? 0 : Math.max(0, Number(e.target.value)))}
-            className="w-full bg-transparent border border-[var(--border)] rounded-md py-1.5 pl-5 pr-2 text-right text-white outline-none focus:border-[var(--accent)] transition-colors duration-300"
+            className="w-full bg-transparent border border-[var(--border)] rounded-md py-2 sm:py-1.5 pl-5 pr-2 text-right text-white outline-none focus:border-[var(--accent)] transition-colors duration-300"
           />
         </div>
       </label>
