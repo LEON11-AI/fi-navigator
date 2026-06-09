@@ -32,6 +32,10 @@ const defaultScenarioAdjustments: Record<ScenarioType, number> = {
 };
 
 const hasValue = (value: unknown) => value !== null && value !== undefined && value !== '';
+const monthlyInvestingCuePattern = /\b(invest|investing|contribute|contributing|contribution|save|saving|set aside|put aside|deposit|dca)\b|定投|每月投|每月存|储蓄/i;
+const monthlyCadencePattern = /\b(monthly|per month|every month|\/mo|\/month|mo\b)\b|每月/i;
+const hasExplicitMonthlyInvesting = (text: string) =>
+  monthlyInvestingCuePattern.test(text) && monthlyCadencePattern.test(text);
 
 const getDerivedMonthlyInvesting = (snapshot: FinancialSnapshot) => {
   const income = snapshot.monthlyIncome ?? 0;
@@ -104,6 +108,10 @@ export default function App() {
         if (!parsed.targetMonthlySpending) {
             parsed.targetMonthlySpending = defaultSnapshot.targetMonthlySpending;
         }
+        if (parsed.monthlyInvestingProvided !== true || !hasValue(parsed.monthlyInvesting) || Number(parsed.monthlyInvesting) <= 0) {
+            parsed.monthlyInvesting = null;
+            parsed.monthlyInvestingProvided = false;
+        }
         
         setSnapshot({ ...defaultSnapshot, ...parsed });
       } catch (e) {
@@ -155,13 +163,18 @@ export default function App() {
         throw new Error(data.error || 'Parsing failed');
       }
 
+      const parsedMonthlyInvestingIsExplicit =
+        hasExplicitMonthlyInvesting(inputText) &&
+        hasValue(data.monthlyInvesting) &&
+        Number(data.monthlyInvesting) > 0;
+
       // Clean up AI output for assumption fields
       // If the AI returns 0 or null for these default-driven fields, remove them so we rely on defaults
       if (!data.expectedAnnualRealReturn) delete data.expectedAnnualRealReturn;
       if (!data.safeWithdrawalRate) delete data.safeWithdrawalRate;
       if (!data.targetMonthlySpending) delete data.targetMonthlySpending;
-      // Treat omitted investing as null so the UI can derive it consistently from surplus.
-      if (!hasValue(data.monthlyInvesting) || Number(data.monthlyInvesting) <= 0) delete data.monthlyInvesting;
+      // Only keep monthly investing if the user explicitly described it.
+      if (!parsedMonthlyInvestingIsExplicit) delete data.monthlyInvesting;
 
       // Merge with defaults
       const newSnapshot: FinancialSnapshot = {
@@ -170,6 +183,7 @@ export default function App() {
         investedAssetsProvided: hasValue(data.investedAssets),
         liquidSavingsProvided: hasValue(data.liquidSavings),
         highInterestDebtProvided: hasValue(data.highInterestDebt),
+        monthlyInvestingProvided: parsedMonthlyInvestingIsExplicit,
       };
 
       setSnapshot(newSnapshot);

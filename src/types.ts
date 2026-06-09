@@ -11,6 +11,7 @@ export interface FinancialSnapshot {
   highInterestDebtProvided?: boolean;
   passiveIncome: number;
   monthlyInvesting: number | null;
+  monthlyInvestingProvided?: boolean;
   targetMonthlySpending: number | null;
   expectedAnnualRealReturn: number | null;
   safeWithdrawalRate: number | null;

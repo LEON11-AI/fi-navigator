@@ -40,7 +40,7 @@ export const handler: Handler = async (event, context) => {
       model: 'gemini-3.1-flash-lite',
       contents: text,
       config: {
-        systemInstruction: "Extract structured personal finance fields from the user's text. Return JSON only. Do not provide financial advice. Do not recommend securities, funds, insurance, loans, or tax actions. If a value is missing or ambiguous, set it to null and include the field in missingFields. Use USD as default currency unless the user states otherwise.",
+        systemInstruction: "Extract structured personal finance fields from the user's text. Return JSON only. Do not provide financial advice. Do not recommend securities, funds, insurance, loans, or tax actions. If a value is missing or ambiguous, set it to null and include the field in missingFields. Use USD as default currency unless the user states otherwise. Do not derive monthlyInvesting from income minus expenses or from general surplus. Only fill monthlyInvesting when the user explicitly states a recurring monthly amount they invest, save, contribute, or put into assets.",
         responseMimeType: 'application/json',
         responseSchema: {
           type: Type.OBJECT,
@@ -52,7 +52,7 @@ export const handler: Handler = async (event, context) => {
             debt: { type: Type.NUMBER, description: 'Total debt' },
             highInterestDebt: { type: Type.NUMBER, description: 'High-interest debt like credit cards' },
             passiveIncome: { type: Type.NUMBER, description: 'Monthly passive income' },
-            monthlyInvesting: { type: Type.NUMBER, description: 'Monthly amount invested' },
+            monthlyInvesting: { type: Type.NUMBER, description: 'Monthly amount explicitly invested or contributed to assets. Do not infer from income minus expenses.' },
             targetMonthlySpending: { type: Type.NUMBER, description: 'Target monthly spending after reaching FI' },
             expectedAnnualRealReturn: { type: Type.NUMBER, description: 'Expected annual real return (e.g., 0.05 for 5%)' },
             safeWithdrawalRate: { type: Type.NUMBER, description: 'Safe withdrawal rate (e.g., 0.04 for 4%)' },
