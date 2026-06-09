@@ -37,12 +37,6 @@ const monthlyCadencePattern = /\b(monthly|per month|every month|\/mo|\/month|mo\
 const hasExplicitMonthlyInvesting = (text: string) =>
   monthlyInvestingCuePattern.test(text) && monthlyCadencePattern.test(text);
 
-const getDerivedMonthlyInvesting = (snapshot: FinancialSnapshot) => {
-  const income = snapshot.monthlyIncome ?? 0;
-  const expenses = snapshot.monthlyExpenses ?? 0;
-  return Math.max(income - expenses, 0);
-};
-
 const getCriticalMissingFields = (snapshot: FinancialSnapshot) => {
   const missing = [];
   if (snapshot.monthlyExpenses === null || Number.isNaN(Number(snapshot.monthlyExpenses))) missing.push('monthlyExpenses');
@@ -436,13 +430,13 @@ export default function App() {
                 
                 {snapshot.monthlyIncome !== null && snapshot.monthlyExpenses !== null ? (
                   <SnapshotField 
-                    label={snapshot.monthlyInvesting !== null ? "Monthly Investing" : "Monthly Surplus"} 
+                    label="Monthly Investing" 
                     val={snapshot.monthlyInvesting}
-                    displayVal={snapshot.monthlyInvesting !== null ? snapshot.monthlyInvesting : getDerivedMonthlyInvesting(snapshot)}
+                    displayVal={snapshot.monthlyInvesting ?? 0}
                     fieldKey="monthlyInvesting" 
                     setSnapshot={setSnapshot} 
-                    microcopy={snapshot.monthlyInvesting !== null ? "Money you plan to put into assets every month." : "Your monthly gap between income and expenses. If you are not investing all of it, edit this field to set the amount you actually invest."}
-                    hint={snapshot.monthlyInvesting === null ? "Calculated from income minus expenses. This is surplus, not an assumed investing amount. Edit to set your real monthly investing." : undefined}
+                    microcopy="Money you plan to put into assets every month."
+                    hint={snapshot.monthlyInvesting === null ? "Not provided in your input. Defaulting to $0 until you enter a real monthly investing amount." : undefined}
                   />
                 ) : null}
 

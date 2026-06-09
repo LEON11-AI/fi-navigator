@@ -5,8 +5,8 @@ export function calculateFIRE(snapshot: FinancialSnapshot): FIRECalculations {
   const mExpenses = snapshot.monthlyExpenses || 0;
   const mSurplus = Math.max(mIncome - mExpenses, 0);
 
-  // If user provided a specific monthly investing amount, use it. Otherwise derive from surplus.
-  const effMonthlyInvesting = snapshot.monthlyInvesting !== null ? Number(snapshot.monthlyInvesting) : mSurplus;
+  // Monthly investing must come from explicit user input. Surplus is tracked separately.
+  const effMonthlyInvesting = snapshot.monthlyInvesting !== null ? Number(snapshot.monthlyInvesting) : 0;
   
   const targetMSpending = snapshot.targetMonthlySpending !== null ? snapshot.targetMonthlySpending : mExpenses;
   const annualTargetSpending = targetMSpending * 12;
