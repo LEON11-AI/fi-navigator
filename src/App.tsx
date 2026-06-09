@@ -415,7 +415,7 @@ export default function App() {
                 {snapshot.monthlyIncome && snapshot.monthlyExpenses ? (
                   <SnapshotField 
                     label="Monthly Investing" 
-                    val={snapshot.monthlyInvesting !== null ? snapshot.monthlyInvesting : Math.max(0, snapshot.monthlyIncome - snapshot.monthlyExpenses)} 
+                    val={snapshot.monthlyInvesting !== null ? snapshot.monthlyInvesting : (snapshot.monthlyIncome - snapshot.monthlyExpenses > 0 ? snapshot.monthlyIncome - snapshot.monthlyExpenses : 0)} 
                     fieldKey="monthlyInvesting" 
                      
                     setSnapshot={setSnapshot} 
@@ -1352,8 +1352,9 @@ function ScenarioCard({ label, sub, amountLabel, amount, isActive, activeContent
             type="number"
             min="0"
             step="50"
-            value={amount}
-            onChange={e => onAmountChange(Math.max(0, Number(e.target.value) || 0))}
+            value={amount === 0 ? '' : amount}
+            placeholder="0"
+            onChange={e => onAmountChange(e.target.value === '' ? 0 : Math.max(0, Number(e.target.value)))}
             className="w-full bg-transparent border border-[var(--border)] rounded-md py-1.5 pl-5 pr-2 text-right text-white outline-none focus:border-[var(--accent)] transition-colors duration-300"
           />
         </div>
