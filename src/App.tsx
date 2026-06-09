@@ -36,6 +36,12 @@ const monthlyInvestingCuePattern = /\b(invest|investing|contribute|contributing|
 const monthlyCadencePattern = /\b(monthly|per month|every month|\/mo|\/month|mo\b)\b|每月/i;
 const hasExplicitMonthlyInvesting = (text: string) =>
   monthlyInvestingCuePattern.test(text) && monthlyCadencePattern.test(text);
+const safeWithdrawalCuePattern = /\b(safe withdrawal|withdrawal rate|swr|4% rule|3% rule)\b|安全提取率|提取率/i;
+const returnCuePattern = /\b(real return|annual return|expected return|return assumption|growth rate|roi)\b|实际回报率|年化回报|收益率/i;
+const targetSpendingCuePattern = /\b(target spending|fi spending|retirement spending|spend in retirement|want to spend|after retirement|after fi)\b|退休后支出|目标支出|财务自由后支出/i;
+const hasExplicitSafeWithdrawalRate = (text: string) => safeWithdrawalCuePattern.test(text);
+const hasExplicitExpectedReturn = (text: string) => returnCuePattern.test(text);
+const hasExplicitTargetSpending = (text: string) => targetSpendingCuePattern.test(text);
 
 const getCriticalMissingFields = (snapshot: FinancialSnapshot) => {
   const missing = [];
@@ -161,12 +167,23 @@ export default function App() {
         hasExplicitMonthlyInvesting(inputText) &&
         hasValue(data.monthlyInvesting) &&
         Number(data.monthlyInvesting) > 0;
+      const parsedExpectedReturnIsExplicit =
+        hasExplicitExpectedReturn(inputText) &&
+        hasValue(data.expectedAnnualRealReturn) &&
+        Number(data.expectedAnnualRealReturn) > 0;
+      const parsedSafeWithdrawalIsExplicit =
+        hasExplicitSafeWithdrawalRate(inputText) &&
+        hasValue(data.safeWithdrawalRate) &&
+        Number(data.safeWithdrawalRate) > 0;
+      const parsedTargetSpendingIsExplicit =
+        hasExplicitTargetSpending(inputText) &&
+        hasValue(data.targetMonthlySpending) &&
+        Number(data.targetMonthlySpending) > 0;
 
       // Clean up AI output for assumption fields
-      // If the AI returns 0 or null for these default-driven fields, remove them so we rely on defaults
-      if (!data.expectedAnnualRealReturn) delete data.expectedAnnualRealReturn;
-      if (!data.safeWithdrawalRate) delete data.safeWithdrawalRate;
-      if (!data.targetMonthlySpending) delete data.targetMonthlySpending;
+      if (!parsedExpectedReturnIsExplicit) delete data.expectedAnnualRealReturn;
+      if (!parsedSafeWithdrawalIsExplicit) delete data.safeWithdrawalRate;
+      if (!parsedTargetSpendingIsExplicit) delete data.targetMonthlySpending;
       // Only keep monthly investing if the user explicitly described it.
       if (!parsedMonthlyInvestingIsExplicit) delete data.monthlyInvesting;
 
